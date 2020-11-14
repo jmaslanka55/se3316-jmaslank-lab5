@@ -1,0 +1,27 @@
+{
+  "name": "se3316-jmaslank-lab4",
+  "version": "1.0.0",
+  "description": "Lab 4",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "lowdb": "^1.0.0",
+    "nodejs": "^0.0.0"
+  },
+  "devDependencies": {
+    "express-sanitizer": "^1.0.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jmaslanka55/se3316-jmaslank-lab4.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jmaslanka55/se3316-jmaslank-lab4/issues"
+  },
+  "homepage": "https://github.com/jmaslanka55/se3316-jmaslank-lab4#readme"
+}

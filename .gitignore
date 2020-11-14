@@ -1,3 +1,7 @@
+./node_modules
+./.idea
+./Lab3-timetable-data.json
+./se3316-jmaslank-lab4.iml
 # Logs
 logs
 *.log
