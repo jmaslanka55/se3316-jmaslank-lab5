@@ -120,5 +120,8 @@
       }
     }
   },
-  "defaultProject": "angular-jmaslank-lab4"
+  "defaultProject": "angular-jmaslank-lab4",
+  "cli": {
+    "analytics": false
+  }
 }
