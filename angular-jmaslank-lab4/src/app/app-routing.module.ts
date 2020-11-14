@@ -8,7 +8,6 @@ const routes: Routes = [
   {path: 'Schedule', component: HomeComponent},
   {path: 'Course', component: ListComponent},
 ];
-
 @NgModule({
   declarations: [],
   imports: [

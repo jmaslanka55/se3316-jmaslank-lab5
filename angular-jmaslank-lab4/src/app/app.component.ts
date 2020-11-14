@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {HttpService} from "./http.service";
 
 @Component({
@@ -6,19 +6,12 @@ import {HttpService} from "./http.service";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{
+export class AppComponent {
   title = 'angular-jmaslank-lab4';
-  constructor(private service : HttpService){
+
+  constructor(private service: HttpService) {
 
   }
-  ngOnInit(){
-    this.getDataFromAPI();
-  }
-  getDataFromAPI(){
-    this.service.getSubjects().subscribe((response) => {
-      console.log('response is ', response)
-    }, (error) =>{
-      console.log(error);
-    })
-  }
+
 }
+

@@ -9,6 +9,7 @@
     "nodejs": "^0.0.0"
   },
   "devDependencies": {
+    "cors": "^2.8.5",
     "express-sanitizer": "^1.0.5"
   },
   "scripts": {

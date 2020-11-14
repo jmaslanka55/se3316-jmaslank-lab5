@@ -1,4 +1,6 @@
 //Declare express and fs as well as port number
+
+
 const express = require('express');
 const app = express();
 const port = 3000;
@@ -17,6 +19,8 @@ const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('db.json');
 const db = low(adapter);
+const cors = require('cors');
+app.use(cors());
 app.get('/api/', (req, res) => {
     res.send(data)
 });

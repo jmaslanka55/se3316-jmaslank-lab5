@@ -9,29 +9,30 @@ import {throwError} from "rxjs";
   providedIn: 'root'
 })
 export class HttpService {
-
+  ROOT_URL;
   constructor(private http: HttpClient) {
-    let URL = 'http://localhost:3000'
+    this.ROOT_URL = 'http://localhost:3000'
   }
 
+
   get(address: string) {
-    address = `${URL}/${address}`;
+    address = `${this.ROOT_URL}/${address}`;
     return this.http.get(address).pipe(catchError(this.handleError));
   }
 
   post(address: string, info: object) {
-    address = `${URL}/${address}`;
+    address = `${this.ROOT_URL}/${address}`;
     return this.http.post(address, info);
   }
 
   put(address: string, info: object) {
-    address = `${URL}/${address}`;
+    address = `${this.ROOT_URL}/${address}`;
     return this.http.post(address, info);
   }
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
-      console.error('An error occurred:', error.error.message);
+      console.error('An error occurred:', error.message);
     } else {
       console.error(
         `Backend returned code ${error.status}, ` +
