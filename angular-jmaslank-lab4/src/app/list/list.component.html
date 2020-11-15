@@ -6,12 +6,12 @@
 </div>
 
 <div class = "searchBox">
-  <input type="text" id="subjectSearch" placeholder="Search by subject">
+  <input type="text" [(ngModel)]="subjectVal" placeholder="Search by subject">
   <br>
-  <input type="text" id="courseSearch" placeholder="Search by Course Code">
+  <input type="text" [(ngModel)]="courseVal" placeholder="Search by Course Code">
   <button (click) = searchSubjectCourse()>Search Subject/Course</button>
   <br>
-  <input type="text" id="componentSearch" placeholder="Search by component">
+  <input type="text" [(ngModel)]="component" placeholder="Search by component">
   <button (click) = searchSubjectCourseComponent()>Search Component</button>
   <p id = "DisplaySearch"></p>
 </div>

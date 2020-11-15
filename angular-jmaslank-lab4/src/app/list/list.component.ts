@@ -8,11 +8,14 @@ import {HttpService} from "../http.service";
   styleUrls: ['./list.component.css']
 })
 export class ListComponent implements OnInit {
-  public arr: [];
+  public arr: String[] = [];
   constructor(private service: HttpService) { }
-
+  subjectVal;
+  courseVal;
+  component;
   ngOnInit(): void {
   }
+
   clearDisplay(){
     document.getElementById("AllSubjects").textContent ="";
     document.getElementById("DisplaySearch").textContent = "";
@@ -27,9 +30,7 @@ export class ListComponent implements OnInit {
     })
   }
   getSubjectCourse(){
-    let subjectVal = (document.getElementById("subjectSearch") as HTMLTextAreaElement).value.toUpperCase();
-    let courseVal = (document.getElementById("courseSearch") as HTMLTextAreaElement).value.toUpperCase();
-    return this.service.get(`api/timetable/${subjectVal}/${courseVal}`);
+    return this.service.get(`api/timetable/${this.subjectVal}/${this.courseVal}`);
   }
   searchSubjectCourse(){
     this.getSubjectCourse().subscribe((res:any)=>{
@@ -38,10 +39,7 @@ export class ListComponent implements OnInit {
     })
   }
   getSubjectCourseComponent(){
-    let subjectVal = (document.getElementById("subjectSearch") as HTMLTextAreaElement).value.toUpperCase();
-    let courseVal = (document.getElementById("courseSearch") as HTMLTextAreaElement).value.toUpperCase();
-    let component = (document.getElementById("componentSearch") as HTMLTextAreaElement).value.toUpperCase();
-    return this.service.get(`api/timetable/${subjectVal}/${courseVal}/${component}`);
+    return this.service.get(`api/timetable/${this.subjectVal}/${this.courseVal}/${this.component}`);
   }
   searchSubjectCourseComponent(){
     this.getSubjectCourseComponent().subscribe((res: any)=>{

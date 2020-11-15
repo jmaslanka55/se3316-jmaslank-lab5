@@ -34,9 +34,9 @@ export class HttpService {
     if (error.error instanceof ErrorEvent) {
       console.error('An error occurred:', error.message);
     } else {
-      console.error(
+      document.getElementById("DisplaySearch").textContent =
         `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
+        `body was: ${error.error}`;
     }
     return throwError(
       'Something bad happened; please try again later.');

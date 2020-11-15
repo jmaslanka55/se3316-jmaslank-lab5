@@ -1,2 +1,6 @@
-<h1>Schedules!
-</h1>
+<h1>Schedules!</h1>
+<div class = "createSchedule">
+  <input type="text" [(ngModel)]="schedName" placeholder="Schedule Name">
+  <button (click) = createSchedule()>Create Schedule</button>
+  <p id ="AllSubjects"></p>
+</div>
