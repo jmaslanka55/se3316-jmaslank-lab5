@@ -20,7 +20,18 @@ export class ListComponent implements OnInit {
   getData(){
     this.getSubjects().subscribe((res : any) =>{
       this.arr = res;
-      document.getElementById("Subjects").textContent = JSON.stringify(this.arr);
+      document.getElementById("AllSubjects").textContent = JSON.stringify(this.arr);
+    })
+  }
+  getSubjectCourse(){
+    let subjectVal = (document.getElementById("subjectSearch") as HTMLTextAreaElement).value.toUpperCase();
+    let courseVal = (document.getElementById("courseSearch") as HTMLTextAreaElement).value.toUpperCase();
+    return this.service.get(`api/timetable/${subjectVal}/${courseVal}`);
+  }
+  searchSubjectCourse(){
+    this.getSubjectCourse().subscribe((res:any)=>{
+      res = JSON.stringify(res[0].className) + JSON.stringify(res[0].catalog_description) + JSON.stringify(res[0].course_info[0].start_time);
+      document.getElementById("DisplaySearch").textContent = res;
     })
   }
 

@@ -2,7 +2,13 @@
 <div class = "CourseSearch">
   <p> Get all Courses </p>
   <button (click) = getData()>All Courses</button>
-  <p id ="Subjects"></p>
+  <p id ="AllSubjects"></p>
 </div>
-
+<div>
+<input type="text" id="subjectSearch" placeholder="Search by subject">
+<br>
+<input type="text" id="courseSearch" placeholder="Search by subject">
+<button (click) = searchSubjectCourse()>Search</button>
+  <p id = "DisplaySearch"></p>
+</div>
 
