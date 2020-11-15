@@ -17,10 +17,7 @@ export class HomeComponent implements OnInit {
       'Content-Type': 'application/json',
     })
   };
-
   readonly schedule = {};
-
-
   constructor(private service: HttpService) {
   }
 
@@ -48,7 +45,7 @@ export class HomeComponent implements OnInit {
   }
 
   removeSchedule() {
-    return this.service.post(`api/remove/schedule/${this.schedName}`,this.schedule, {resonseType: 'text'});
+    return this.service.post(`api/remove/schedule/${this.schedName}`,this.schedule, {responseType: 'text'});
   }
 
   deleteSchedule() {
@@ -58,7 +55,12 @@ export class HomeComponent implements OnInit {
   }
 
   deleteAllSchedules() {
-
+    return this.service.post(`api/schedulelist`,this.schedule,{responseType: 'text'})
+  }
+  deleteAll(){
+    this.deleteAllSchedules().subscribe((res:any)=>{
+      console.log(res);
+    })
   }
 
   listSchedules() {

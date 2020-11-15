@@ -142,7 +142,7 @@ app.get('/api/display/schedule/:scheduleName', (req, res) => {
     let schedName = req.sanitize(req.params.scheduleName);
     let showSched = {};
     for (let i = 0; i < db.getState().Schedule.length; i++) {
-        if (db.getState().Schedule[i].schedule_name.toUpperCase() == schedName.toUpperCase()) {
+        if (db.getState().Schedule[i].schedule_name.toUpperCase() === schedName.toUpperCase()) {
             for (let k = 0; k < db.getState().Schedule[i].course_name.length; k++) {
                 let showCourse = db.getState().Schedule[i].course_name[k];
                 let showSubject = db.getState().Schedule[i].subject[k];
@@ -161,6 +161,7 @@ app.post('/api/remove/schedule/:scheduleName', (req, res) => {
     let schedName = req.sanitize(req.params.scheduleName);
     for (let i = 0; i < db.getState().Schedule.length; i++) {
         if (db.getState().Schedule[i].schedule_name.toUpperCase() === schedName.toUpperCase()) {
+            schedName = db.getState().Schedule[i].schedule_name;
             db.get('Schedule').remove({schedule_name: schedName}).write();
             res.status(200).send("deleted");
             return;
