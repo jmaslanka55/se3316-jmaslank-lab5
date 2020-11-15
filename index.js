@@ -147,9 +147,10 @@ app.get('/api/display/schedule/:scheduleName', (req, res) => {
                 let showCourse = db.getState().Schedule[i].course_name[k];
                 let showSubject = db.getState().Schedule[i].subject[k];
                 const course = data.filter(a => a.subject.toString().toLowerCase() === req.sanitize(showSubject.toString().toLowerCase()));
-                showSched[k] = course.filter(a => a.catalog_nbr.toString().toLowerCase() === req.sanitize(showCourse.toString().toLowerCase()));
+                showSched[k] = course.filter(a => a.catalog_nbr.toString().toUpperCase() === req.sanitize(showCourse.toString().toUpperCase()));
             }
             res.send(showSched);
+
             return;
         }
     }

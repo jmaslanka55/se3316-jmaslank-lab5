@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../http.service";
 import {HttpHeaders} from "@angular/common/http";
-import {stringify} from "querystring";
 
 @Component({
   selector: 'app-home',
@@ -58,7 +57,7 @@ export class HomeComponent implements OnInit {
   }
   scheduleSearch(){
     this.searchSchedule().subscribe((res:any)=>{
-      document.getElementById("ShowResults").textContent = `Schedule: ${this.schedName} Classes: ` + JSON.stringify(res);
+      document.getElementById("ShowResults").textContent = `Schedule: ${this.schedName} Classes: ` + JSON.stringify(res)
     })
   }
 
