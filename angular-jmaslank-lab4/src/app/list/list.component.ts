@@ -13,7 +13,10 @@ export class ListComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
+  clearDisplay(){
+    document.getElementById("AllSubjects").textContent ="";
+    document.getElementById("DisplaySearch").textContent = "";
+  }
   getSubjects(){
     return this.service.get('api/subject')
   }
@@ -31,6 +34,19 @@ export class ListComponent implements OnInit {
   searchSubjectCourse(){
     this.getSubjectCourse().subscribe((res:any)=>{
       res = JSON.stringify(res[0].className) + JSON.stringify(res[0].catalog_description) + JSON.stringify(res[0].course_info[0].start_time);
+      document.getElementById("DisplaySearch").textContent = res;
+    })
+  }
+  getSubjectCourseComponent(){
+    let subjectVal = (document.getElementById("subjectSearch") as HTMLTextAreaElement).value.toUpperCase();
+    let courseVal = (document.getElementById("courseSearch") as HTMLTextAreaElement).value.toUpperCase();
+    let component = (document.getElementById("componentSearch") as HTMLTextAreaElement).value.toUpperCase();
+    return this.service.get(`api/timetable/${subjectVal}/${courseVal}/${component}`);
+  }
+  searchSubjectCourseComponent(){
+    this.getSubjectCourseComponent().subscribe((res: any)=>{
+      res = JSON.stringify(res[0].className) + JSON.stringify(res[0].catalog_nbr) + JSON.stringify(res[0].catalog_description) + JSON.stringify(res[0].course_info[0].start_time)
+        + JSON.stringify(res[0].course_info[0].ssr_component);
       document.getElementById("DisplaySearch").textContent = res;
     })
   }

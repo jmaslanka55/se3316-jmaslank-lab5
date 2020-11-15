@@ -1,14 +1,18 @@
 <h1>Courses!!</h1>
 <div class = "CourseSearch">
-  <p> Get all Courses </p>
   <button (click) = getData()>All Courses</button>
+  <button (click) = clearDisplay()>Clear Display</button>
   <p id ="AllSubjects"></p>
 </div>
-<div>
-<input type="text" id="subjectSearch" placeholder="Search by subject">
-<br>
-<input type="text" id="courseSearch" placeholder="Search by subject">
-<button (click) = searchSubjectCourse()>Search</button>
+
+<div class = "searchBox">
+  <input type="text" id="subjectSearch" placeholder="Search by subject">
+  <br>
+  <input type="text" id="courseSearch" placeholder="Search by Course Code">
+  <button (click) = searchSubjectCourse()>Search Subject/Course</button>
+  <br>
+  <input type="text" id="componentSearch" placeholder="Search by component">
+  <button (click) = searchSubjectCourseComponent()>Search Component</button>
   <p id = "DisplaySearch"></p>
 </div>
 
