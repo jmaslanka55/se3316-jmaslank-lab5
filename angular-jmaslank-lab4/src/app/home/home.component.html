@@ -2,5 +2,16 @@
 <div class = "createSchedule">
   <input type="text" [(ngModel)]="schedName" placeholder="Schedule Name">
   <button (click) = createSchedule()>Create Schedule</button>
-  <p id ="AllSubjects"></p>
+  <button (click) = deleteSchedule()>Delete Schedule</button>
+  <button (click) = deleteAllSchedules()>Delete All Schedule</button>
+  <br>
+  <button (click) = listAllSchedules()>List Schedules</button>
+  <p id ="ShowResults"></p>
 </div>
+<div class = "AddingPairs">
+  <input type="text" [(ngModel)]="subjectName" placeholder="Subject">
+  <input type="text" [(ngModel)]="courseCode" placeholder="Course Code">
+  <button (click) = addingSchedule()>Add pair to schedule</button>
+</div>
+
+<P id = "ERROR"></P>

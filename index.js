@@ -118,7 +118,7 @@ app.put('/api/make/schedule/:scheduleName', (req, res) => {
     for (let i = 0; i < db.getState().Schedule.length; i++) {
         if (db.getState().Schedule[i].schedule_name.toUpperCase() === schedName.toUpperCase()) {
             for (let k = 0; k < db.getState().Schedule[i].course_name.length; k++) {
-                if (db.getState().Schedule[i].course_name[k].toUpperCase() == sanitizedCourse.toUpperCase() && db.getState().Schedule[i].subject[k].toUpperCase() == sanitizedSubject.toUpperCase()) {
+                if (db.getState().Schedule[i].course_name[k].toUpperCase() === sanitizedCourse.toUpperCase() && db.getState().Schedule[i].subject[k].toUpperCase() === sanitizedSubject.toUpperCase()) {
                     db.getState().Schedule[i].course_name[k] = sanitizedCourse;
                     db.getState().Schedule[i].subject[k] = sanitizedSubject;
                     db.update('Schedule').write();

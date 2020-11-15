@@ -25,16 +25,16 @@ export class HttpService {
     return this.http.post(address, info);
   }
 
-  put(address: string, info: object) {
+  put(address: string, info: object, options) {
     address = `${this.ROOT_URL}/${address}`;
-    return this.http.post(address, info);
+    return this.http.put(address, info,options);
   }
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
-      console.error('An error occurred:', error.message);
+      document.getElementById("ERROR").textContent = 'An error occurred:' + error.message;
     } else {
-      document.getElementById("DisplaySearch").textContent =
+      document.getElementById("ERROR").textContent =
         `Backend returned code ${error.status}, ` +
         `body was: ${error.error}`;
     }
