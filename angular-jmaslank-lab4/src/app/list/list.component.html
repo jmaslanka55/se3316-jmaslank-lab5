@@ -1,20 +1,21 @@
-<h1>Courses!!</h1>
-<div class = "CourseSearch">
-  <button (click) = getData()>All Courses</button>
-  <button (click) = clearDisplay()>Clear Display</button>
-  <p id ="AllSubjects"></p>
+<div class="CourseSearch">
+  <button (click)=clearDisplay()>Clear Display</button>
+  <button (click)=getData()>All Courses</button>
 </div>
-
-<div class = "searchBox">
+<div class="searchBox">
   <input type="text" [(ngModel)]="subjectVal" placeholder="Search by subject">
   <br>
   <input type="text" [(ngModel)]="courseVal" placeholder="Search by Course Code">
-  <button (click) = searchSubjectCourse()>Search Subject/Course</button>
+  <button (click)=searchSubjectCourse()>Search Subject/Course</button>
   <br>
   <input type="text" [(ngModel)]="component" placeholder="Search by component">
-  <button (click) = searchSubjectCourseComponent()>Search Component</button>
-  <p id = "DisplaySearch"></p>
+  <button (click)=searchSubjectCourseComponent()>Search Component</button>
+</div>
+<p id="DisplaySearch"></p>
+<div class="ShowAll">
+  <ul id="allClasses">
+  </ul>
 </div>
 
-<P id = "ERROR"></P>
+<P id="ERROR"></P>
 

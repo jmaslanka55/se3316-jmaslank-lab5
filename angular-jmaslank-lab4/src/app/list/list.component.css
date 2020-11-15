@@ -1,0 +1,34 @@
+.ShowAll {
+  display: flex;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto auto;
+  padding: 50px;
+  grid-gap: 50px;
+}
+li{
+
+  border: 1px solid black;
+  padding: 20px;
+  text-align: center;
+  background-color: #B8860B;
+  border-radius: 10px;
+  justify-items: center;
+
+}
+ul{
+  list-style-type: none;
+  display: grid;
+  grid-template-columns: auto auto auto auto auto ;
+  grid-template-rows: auto auto auto auto auto;
+  padding: 15px;
+  grid-gap: 30px;
+  justify-content: space-evenly;
+}
+.results{
+  display: flex;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto auto;
+  padding: 50px;
+  grid-gap: 50px;
+}
+
