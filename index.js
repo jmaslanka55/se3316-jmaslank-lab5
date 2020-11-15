@@ -149,7 +149,7 @@ app.get('/api/display/schedule/:scheduleName', (req, res) => {
                 const course = data.filter(a => a.subject.toString().toLowerCase() === req.sanitize(showSubject.toString().toLowerCase()));
                 showSched[k] = course.filter(a => a.catalog_nbr.toString().toLowerCase() === req.sanitize(showCourse.toString().toLowerCase()));
             }
-            res.send(showSched);i
+            res.send(showSched);
             return;
         }
     }

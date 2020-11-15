@@ -53,6 +53,14 @@ export class HomeComponent implements OnInit {
       console.log(res);
     })
   }
+  searchSchedule(){
+    return this.service.get(`api/display/schedule/${this.schedName}`)
+  }
+  scheduleSearch(){
+    this.searchSchedule().subscribe((res:any)=>{
+      document.getElementById("ShowResults").textContent = `Schedule: ${this.schedName} Classes: ` + JSON.stringify(res);
+    })
+  }
 
   deleteAllSchedules() {
     return this.service.post(`api/schedulelist`,this.schedule,{responseType: 'text'})
