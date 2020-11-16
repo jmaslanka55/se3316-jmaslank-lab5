@@ -152,7 +152,6 @@ app.get('/api/display/schedule/:scheduleName', (req, res) => {
                 showSched.push(final);
             }
             res.send(showSched);
-            console.log(showSched);
             return;
         }
     }

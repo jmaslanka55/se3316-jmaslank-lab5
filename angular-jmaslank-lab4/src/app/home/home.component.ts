@@ -29,7 +29,6 @@ export class HomeComponent implements OnInit {
   populate() {
     this.populateCodes().subscribe((res: any) => {
       this.arr = res;
-      console.log(res);
     });
   }
   makeSchedule() {
@@ -69,7 +68,7 @@ export class HomeComponent implements OnInit {
       console.log(res.length);
       let classes = ""
       for (let i = 0; i<res.length;i++){
-        classes += JSON.stringify(res[i][0].className) + "\n"
+        classes += JSON.stringify(res[i][0].catalog_nbr)+ " Name: " + JSON.stringify(res[i][0].className) + "\n"
       }
       document.getElementById("ShowResults").textContent = `Schedule: ${this.schedName} Classes: ` + classes;
     })

@@ -16,10 +16,18 @@ export class ListComponent implements OnInit {
   subjectVal;
   courseVal;
   component;
-
+  arr2;
   ngOnInit(): void {
   }
-
+  populateCodes(){
+    return this.service.get(`api/courses/${this.subjectVal}`)
+  }
+  populate() {
+    this.populateCodes().subscribe((res: any) => {
+      this.arr2 = res;
+      console.log(res);
+    });
+  }
   clearDisplay() {
     document.getElementById("DisplaySearch").textContent = "";
     let list = document.getElementById("allClasses");
@@ -46,13 +54,12 @@ export class ListComponent implements OnInit {
     })
   }
 
-  getSubjectCourse() {
-    return this.service.get(`api/timetable/${this.subjectVal}/${this.courseVal}`);
+  getSubjectCourse(course) {
+    return this.service.get(`api/timetable/${this.subjectVal}/${course}`);
   }
 
-  searchSubjectCourse() {
-    this.getSubjectCourse().subscribe((res: any) => {
-      console.log(res)
+  searchSubjectCourse(course) {
+    this.getSubjectCourse(course).subscribe((res: any) => {
       res = JSON.stringify(res[0].className) + JSON.stringify(res[0].catalog_nbr) + JSON.stringify(res[0].catalog_description) + "Starts at: "
       + JSON.stringify(res[0].course_info[0].start_time) + " Ends at: " +(res[0].course_info[0].end_time) ;
       document.getElementById("DisplaySearch").textContent = res;
@@ -63,13 +70,14 @@ export class ListComponent implements OnInit {
   }
 
 
-  getSubjectCourseComponent() {
-    return this.service.get(`api/timetable/${this.subjectVal}/${this.courseVal}/${this.component}`);
+  getSubjectCourseComponent(course) {
+    return this.service.get(`api/timetable/${this.subjectVal}/${course}/${this.component}`);
   }
 
-  searchSubjectCourseComponent() {
-    this.getSubjectCourseComponent().subscribe((res: any) => {
-      res = JSON.stringify(res[0].className) + JSON.stringify(res[0].catalog_nbr) + JSON.stringify(res[0].catalog_description) + JSON.stringify(res[0].course_info[0].start_time)
+  searchSubjectCourseComponent(course) {
+    this.getSubjectCourseComponent(course).subscribe((res: any) => {
+      res = JSON.stringify(res[0].className) + JSON.stringify(res[0].catalog_nbr) + JSON.stringify(res[0].catalog_description) + "Starts at: "
+        + JSON.stringify(res[0].course_info[0].start_time) + " Ends at: " +(res[0].course_info[0].end_time)
         + JSON.stringify(res[0].course_info[0].ssr_component);
       document.getElementById("DisplaySearch").textContent = res;
     })
