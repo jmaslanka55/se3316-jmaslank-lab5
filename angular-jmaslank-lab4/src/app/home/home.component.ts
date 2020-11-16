@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../http.service";
 import {HttpHeaders} from "@angular/common/http";
+import {catchError} from "rxjs/operators";
 
 @Component({
   selector: 'app-home',
@@ -32,7 +33,7 @@ export class HomeComponent implements OnInit {
     });
   }
   makeSchedule() {
-    return this.service.put(`api/schedule/${this.schedName}`, this.schedule, {responseType: 'text'});
+    return this.service.put(`api/schedule/${this.schedName}`, this.schedule, {responseType: 'text', observe: 'response'})
   }
 
   createSchedule() {
@@ -68,9 +69,9 @@ export class HomeComponent implements OnInit {
       console.log(res.length);
       let classes = ""
       for (let i = 0; i<res.length;i++){
-        classes += JSON.stringify(res[i][0].catalog_nbr)+ " Name: " + JSON.stringify(res[i][0].className) + "\n"
+        classes += JSON.stringify(res[i][0].catalog_nbr)+ " Name: " + JSON.stringify(res[i][0].className) + JSON.stringify(res[i][0].catalog_description) + "\n\n"
       }
-      document.getElementById("ShowResults").textContent = `Schedule: ${this.schedName} Classes: ` + classes;
+      document.getElementById("ShowResults").textContent = `Schedule: ${this.schedName} \n Classes: \n ` + classes;
     })
   }
 

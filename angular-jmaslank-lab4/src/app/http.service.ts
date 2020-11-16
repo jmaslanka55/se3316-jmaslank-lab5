@@ -32,11 +32,11 @@ export class HttpService {
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
-      document.getElementById("ERROR").textContent = 'An error occurred:' + error.message;
+      console.error('An error occurred: ', error.message)
     } else {
-      document.getElementById("ERROR").textContent =
+      console.error(
         `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`;
+        `body was: ${error.error}`);
     }
     return throwError(
       'Something bad happened; please try again later.');
