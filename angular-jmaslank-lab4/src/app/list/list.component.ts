@@ -26,10 +26,6 @@ export class ListComponent implements OnInit {
     while (list.hasChildNodes()) {
       list.removeChild(list.firstChild);
     }
-    let list2 = document.getElementById("results");
-    while (list2.hasChildNodes()) {
-      list2.removeChild(list.firstChild);
-    }
   }
 
   getSubjects() {
@@ -56,8 +52,9 @@ export class ListComponent implements OnInit {
 
   searchSubjectCourse() {
     this.getSubjectCourse().subscribe((res: any) => {
-      res = JSON.stringify(res[0].className) + JSON.stringify(res[0].catalog_nbr) + JSON.stringify(res[0].catalog_description) + JSON.stringify(res[0].course_info[0].start_time)
-        + JSON.stringify(res[0].course_info[0].ssr_component);
+      console.log(res)
+      res = JSON.stringify(res[0].className) + JSON.stringify(res[0].catalog_nbr) + JSON.stringify(res[0].catalog_description) + "Starts at: "
+      + JSON.stringify(res[0].course_info[0].start_time) + " Ends at: " +(res[0].course_info[0].end_time) ;
       document.getElementById("DisplaySearch").textContent = res;
 
     }, error => {

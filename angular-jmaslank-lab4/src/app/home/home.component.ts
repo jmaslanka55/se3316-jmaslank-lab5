@@ -11,6 +11,7 @@ export class HomeComponent implements OnInit {
   schedName;
   subjectName;
   courseCode;
+  arr;
   readonly httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -22,7 +23,15 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
+  populateCodes(){
+    return this.service.get(`api/courses/${this.subjectName}`)
+  }
+  populate() {
+    this.populateCodes().subscribe((res: any) => {
+      this.arr = res;
+      console.log(res);
+    });
+  }
   makeSchedule() {
     return this.service.put(`api/schedule/${this.schedName}`, this.schedule, {responseType: 'text'});
   }
@@ -33,12 +42,12 @@ export class HomeComponent implements OnInit {
     })
   }
 
-  addToSchedule() {
-    return this.service.put(`api/make/schedule/${this.schedName}`,{"subject":this.subjectName, "catalog_nbr": this.courseCode} , {responseType: 'text'});
+  addToSchedule(course) {
+    return this.service.put(`api/make/schedule/${this.schedName}`,{"subject":this.subjectName, "catalog_nbr": course} , {responseType: 'text'});
   }
 
-  addingSchedule() {
-    this.addToSchedule().subscribe((res: any) => {
+  addingSchedule(course) {
+    this.addToSchedule(course).subscribe((res: any) => {
       console.log(res);
     })
   }
@@ -57,7 +66,12 @@ export class HomeComponent implements OnInit {
   }
   scheduleSearch(){
     this.searchSchedule().subscribe((res:any)=>{
-      document.getElementById("ShowResults").textContent = `Schedule: ${this.schedName} Classes: ` + JSON.stringify(res)
+      console.log(res.length);
+      let classes = ""
+      for (let i = 0; i<res.length;i++){
+        classes += JSON.stringify(res[i][0].className) + "\n"
+      }
+      document.getElementById("ShowResults").textContent = `Schedule: ${this.schedName} Classes: ` + classes;
     })
   }
 

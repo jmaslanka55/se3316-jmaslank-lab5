@@ -59,11 +59,12 @@ app.get('/api/subject', (req, res) => {
 
 //Task 2
 function get_coursecode(courseCode) {
-    let returned_value = {};
+    let returned_value = [];
     returned_value.subject = courseCode[0].subject;
     for (let i = 0; i < courseCode.length; i++) {
-        returned_value["Course code " + (i + 1)] = courseCode[i].catalog_nbr;
+        returned_value.push(courseCode[i].catalog_nbr);
     }
+
     return returned_value;
 }
 
@@ -140,17 +141,18 @@ app.put('/api/make/schedule/:scheduleName', (req, res) => {
 //Task 6
 app.get('/api/display/schedule/:scheduleName', (req, res) => {
     let schedName = req.sanitize(req.params.scheduleName);
-    let showSched = {};
+    let showSched = [];
     for (let i = 0; i < db.getState().Schedule.length; i++) {
         if (db.getState().Schedule[i].schedule_name.toUpperCase() === schedName.toUpperCase()) {
             for (let k = 0; k < db.getState().Schedule[i].course_name.length; k++) {
                 let showCourse = db.getState().Schedule[i].course_name[k];
                 let showSubject = db.getState().Schedule[i].subject[k];
                 const course = data.filter(a => a.subject.toString().toLowerCase() === req.sanitize(showSubject.toString().toLowerCase()));
-                showSched[k] = course.filter(a => a.catalog_nbr.toString().toUpperCase() === req.sanitize(showCourse.toString().toUpperCase()));
+                const final = course.filter(a => a.catalog_nbr.toString().toUpperCase() === req.sanitize(showCourse.toString().toUpperCase()));
+                showSched.push(final);
             }
             res.send(showSched);
-
+            console.log(showSched);
             return;
         }
     }

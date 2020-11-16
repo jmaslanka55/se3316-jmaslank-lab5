@@ -4,15 +4,17 @@
   <button (click) = createSchedule()>Create Schedule</button>
   <button (click) = deleteSchedule()>Delete Schedule</button>
   <button (click) = deleteAll()>Delete All Schedule</button>
-  <br>
   <button (click) = listAllSchedules()>List Schedules</button>
-  <p id ="ShowResults"></p>
+
 </div>
 <div class = "AddingPairs">
   <input type="text" [(ngModel)]="subjectName" placeholder="Subject">
-  <input type="text" [(ngModel)]="courseCode" placeholder="Course Code">
-  <button (click) = addingSchedule()>Add pair to schedule</button>
-  <button (click) = scheduleSearch()>get timetables in schedules</button>
+  <button (click) = populate()>Show course code pairs</button>
+  <select #dropdown>
+    <option *ngFor="let x of arr">{{ x }}</option>
+  </select>
+  <button (click) = "addingSchedule(dropdown.value)">Add pair to schedule</button>
+  <button (click) = scheduleSearch()>Timetable by Schedule Name</button>
 </div>
-
+<p id ="ShowResults"></p>
 <P id = "ERROR"></P>
