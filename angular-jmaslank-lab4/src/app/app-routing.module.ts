@@ -7,10 +7,10 @@ import {CreateUserComponent} from "./create-user/create-user.component";
 import {LoginComponent} from "./login/login.component";
 
 const routes: Routes = [
+  {path: '',component: LoginComponent},
   {path: 'Schedule', component: HomeComponent},
   {path: 'Course', component: ListComponent},
-  {path: 'Create', component: CreateUserComponent},
-  {path: 'Login', component: LoginComponent},
+  {path: 'Create', component: CreateUserComponent}
 ];
 @NgModule({
   declarations: [],

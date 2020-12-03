@@ -16,14 +16,10 @@ export class LoginComponent implements OnInit {
   }
   verify(){
     this.postLog({emailaddress: this.email, passcode: this.password}).subscribe((res:any)=>{
+      console.log(res);
       let temp = JSON.parse(res);
-      LocalStorage.setItem("jwt", temp.accessToken)
-      console.log(temp)
-
-      if (temp.message =="success"){
-        let next = document.getElementById("hideMe");
-        next.removeAttribute("hidden");
-      }
+      localStorage.setItem("jwt", temp.accessToken);
+      console.log("Logged in");
     });
   }
   postLog(info: object){

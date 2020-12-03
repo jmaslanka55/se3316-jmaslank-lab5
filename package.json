@@ -10,7 +10,8 @@
   },
   "devDependencies": {
     "cors": "^2.8.5",
-    "express-sanitizer": "^1.0.5"
+    "express-sanitizer": "^1.0.5",
+    "jsonwebtoken": "^8.5.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -37,10 +37,11 @@ export class ListComponent implements OnInit {
   }
 
   getSubjects() {
-    return this.service.get('api/subject')
+    return this.service.get('api/subject');
   }
 
   getData() {
+
     this.getSubjects().subscribe((res: any) => {
       this.arr = res;
       for (let i = 0; i < Object.keys(this.arr).length / 2; i++) {

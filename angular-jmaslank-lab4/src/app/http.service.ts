@@ -16,17 +16,17 @@ export class HttpService {
 
 
   get(address: string) {
-    address = `/${address}`;
+    address = `${this.ROOT_URL}/${address}`;
     return this.http.get(address).pipe(catchError(this.handleError));
   }
 
   post(address: string, info: object, options) {
-    address = `/${address}`;
+    address = `${this.ROOT_URL}/${address}`;
     return this.http.post(address, info,options);
   }
 
   put(address: string, info: object, options) {
-    address = `/${address}`;
+    address = `${this.ROOT_URL}/${address}`;
     return this.http.put(address, info,options);
   }
 

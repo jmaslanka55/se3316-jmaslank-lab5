@@ -1,6 +1,8 @@
 //Declare express and fs as well as port number
 
 
+const jwt = require('jsonwebtoken');
+
 const express = require('express');
 const app = express();
 const port = 3000;
@@ -50,16 +52,36 @@ create_user_db();
 app.listen(port, () => {
     console.log('Listening on port ' + port);
 });
+//JWT Authentication Method
+const authenticateJWT = (req) => {
+    const authHeader = req.headers.Authorization;
+    const token = authHeader.split(' ')[1];
+    if (authHeader.exp) {
+        console.log("expired");
+    }
+    let verification = jwt.verify(token, accessTokenSecret, (err) => {
+        if (err) {
+            return 404;
+        } else {
+            return 101;
+        }
+    });
+    return verification;
+};
 //Method to handle log ins
 app.post('/api/login', (req, res) => {
     const logData = req.body;
     let email = req.sanitize(logData.emailaddress);
-    let passcode = req.sanitize(logData.password);
+    let passcode = req.sanitize(logData.passcode);
+    console.log(email + " " + passcode);
     for (let i = 0; i < dbUser.getState().Users.length; i++) {
-        if (dbUser.getState().Users[i].emailaddress === email){
-            if (dbUser.getState().Users[i].password === passcode){
-                const accessToken = jwt.sign({emailaddress: email, userPassword: passcode},accessTokenSecret,{expiresIn:"1hr"});
-                res.json({accessToken, message:"success"});
+        if (dbUser.getState().Users[i].emailaddress === email) {
+            if (dbUser.getState().Users[i].password === passcode) {
+                const accessToken = jwt.sign({
+                    emailaddress: email,
+                    userPassword: passcode
+                }, accessTokenSecret, {expiresIn: "1hr"});
+                res.json({accessToken, message: "success"});
                 return;
             }
         }
@@ -74,7 +96,7 @@ app.put('/api/users', (req, res) => {
     let email = req.sanitize(userData.email);
     let passcode = req.sanitize(userData.finalPassword);
     for (let i = 0; i < dbUser.getState().Users.length; i++) {
-        if (db.getState().Users[i].emailaddress === email) {
+        if (dbUser.getState().Users[i].emailaddress === email) {
             res.status(404).send("Email already registered");
             return;
         }
@@ -99,6 +121,7 @@ function get_subject_classname() {
 
 //get request for subjects
 app.get('/api/subject', (req, res) => {
+
     res.send(get_subject_classname());
 
 });
