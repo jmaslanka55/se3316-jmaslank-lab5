@@ -7,7 +7,7 @@ import {HttpService} from "./http.service";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'angular-jmaslank-lab4';
+  title = 'angular-jmaslank-lab5';
 
   constructor(private service: HttpService) {
 

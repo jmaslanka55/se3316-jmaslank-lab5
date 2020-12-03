@@ -31,13 +31,18 @@ function create_schedule_db() {
         Schedule: []
     }).write();
 }
-
+function create_user_db(){
+    db.defaults({Users: []}).write();
+}
 //call create db function
 create_schedule_db();
+create_user_db();
 //listening for requests
 app.listen(port, () => {
     console.log('Listening on port ' + port);
 });
+//Method to handle log ins
+
 
 //TASK 1
 function get_subject_classname() {
