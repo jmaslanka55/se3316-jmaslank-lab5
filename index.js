@@ -32,7 +32,9 @@ function create_schedule_db() {
     }).write();
 }
 function create_user_db(){
-    db.defaults({Users: []}).write();
+    db.defaults({
+        Users: []
+    }).write();
 }
 //call create db function
 create_schedule_db();
@@ -42,6 +44,23 @@ app.listen(port, () => {
     console.log('Listening on port ' + port);
 });
 //Method to handle log ins
+
+//Method to create a new user and add them to the User database
+app.put('/api/users', (req,res)=>{
+    let userData = req.body;
+    let userName = req.sanitize(userData.name);
+    let email = req.sanitize(userData.email);
+    let passcode = req.sanitize(userData.finalPassword);
+    for (let i = 0; i<db.getState.Users.length;i++){
+        if (db.getState().Users[i].emailaddress === email){
+            res.status(404).send("Email already registered")
+            return;
+        }
+    }
+    dbUser.get('Users').push({userName: name, emailaddress: email, password: passcode}).write();
+    dbUser.update('Users').write();
+    res.status(200).send("Account created");
+});
 
 
 //TASK 1

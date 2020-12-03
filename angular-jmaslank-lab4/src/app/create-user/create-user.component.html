@@ -1,7 +1,8 @@
 <h1> Create User </h1>
-<div>
+<div id = "userInputs">
   <input [(ngModel)]="firstName" type = "text" id = "name" placeholder = "First Name"><br>
   <input [(ngModel)]="lastName" type = "text" id = "lastName" placeholder = "Last Name"><br>
   <input [(ngModel)]="email" type = "email" id = "email" placeholder = "email"><br>
   <input [(ngModel)]="password" type = "text" id = "password" placeholder = "password"><br>
+  <button (click) = "createUser()" >Create User</button>
 </div>
