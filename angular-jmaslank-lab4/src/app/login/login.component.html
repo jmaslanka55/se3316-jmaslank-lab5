@@ -1,0 +1,29 @@
+
+<h2>LogIn Page</h2>
+
+<div>
+  <input [(ngModel)] = "email" type = "text" id="username" placeholder="USERNAME">
+</div>
+
+<div>
+  <input [(ngModel)] = "password" type = "text" id="password" placeholder="PASSWORD">
+</div>
+
+<div>
+  <button (click) = "verify()">LOGIN</button>
+</div>
+
+<nav>
+  <a routerLink="/Create">CREATE USER</a>
+</nav>
+
+<nav>
+  <a routerLink="/Course">SEARCH TABLE</a>
+</nav>
+
+<nav id = "hideMe" hidden >
+  <a routerLink="/Schedule">CREATE TABLE</a>
+</nav>
+
+
+<router-outlet></router-outlet>

@@ -28,17 +28,21 @@ app.get('/api/', (req, res) => {
     res.send(data)
 });
 
+const accessTokenSecret = 'JmaslankSecretCode1234';
+
 //creates schedule database
 function create_schedule_db() {
     db.defaults({
         Schedule: []
     }).write();
 }
-function create_user_db(){
+
+function create_user_db() {
     dbUser.defaults({
         Users: []
     }).write();
 }
+
 //call create db function
 create_schedule_db();
 create_user_db();
@@ -47,16 +51,31 @@ app.listen(port, () => {
     console.log('Listening on port ' + port);
 });
 //Method to handle log ins
+app.post('/api/login', (req, res) => {
+    const logData = req.body;
+    let email = req.sanitize(logData.emailaddress);
+    let passcode = req.sanitize(logData.password);
+    for (let i = 0; i < dbUser.getState().Users.length; i++) {
+        if (dbUser.getState().Users[i].emailaddress === email){
+            if (dbUser.getState().Users[i].password === passcode){
+                const accessToken = jwt.sign({emailaddress: email, userPassword: passcode},accessTokenSecret,{expiresIn:"1hr"});
+                res.json({accessToken, message:"success"});
+                return;
+            }
+        }
+    }
+    res.send('Username or password incorrect');
+});
 
 //Method to create a new user and add them to the User database
-app.put('/api/users', (req,res)=>{
+app.put('/api/users', (req, res) => {
     let userData = req.body;
     let userName = req.sanitize(userData.name);
     let email = req.sanitize(userData.email);
     let passcode = req.sanitize(userData.finalPassword);
-    for (let i = 0; i<db.getState.Users.length;i++){
-        if (db.getState().Users[i].emailaddress === email){
-            res.status(404).send("Email already registered")
+    for (let i = 0; i < dbUser.getState().Users.length; i++) {
+        if (db.getState().Users[i].emailaddress === email) {
+            res.status(404).send("Email already registered");
             return;
         }
     }
