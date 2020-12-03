@@ -19,6 +19,9 @@ const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('db.json');
 const db = low(adapter);
+const adapterUser = new FileSync('dbUser.json');
+const dbUser = low(adapterUser);
+
 const cors = require('cors');
 app.use(cors());
 app.get('/api/', (req, res) => {
@@ -32,7 +35,7 @@ function create_schedule_db() {
     }).write();
 }
 function create_user_db(){
-    db.defaults({
+    dbUser.defaults({
         Users: []
     }).write();
 }
@@ -57,7 +60,7 @@ app.put('/api/users', (req,res)=>{
             return;
         }
     }
-    dbUser.get('Users').push({userName: name, emailaddress: email, password: passcode}).write();
+    dbUser.get('Users').push({userName: userName, emailaddress: email, password: passcode}).write();
     dbUser.update('Users').write();
     res.status(200).send("Account created");
 });
