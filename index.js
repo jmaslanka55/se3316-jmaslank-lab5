@@ -84,7 +84,7 @@ app.post('/api/login', (req, res) => {
                 const accessToken = jwt.sign({
                     emailAddress: email,
                     userPassword: passcode
-                }, accessTokenSecret, {expiresIn: "100s"});
+                }, accessTokenSecret, {expiresIn: "5s"});
                 res.json({accessToken, message: "success"});
                 console.log("logged in");
                 return;
@@ -175,7 +175,6 @@ app.get('/api/timetable/:subjectCode/:course_code/:course_component?', (req, res
 app.put('/api/schedule/:scheduleName/:auth_token', (req, res) => {
     const token = req.sanitize(req.params.auth_token);
     const jsonToken = JSON.parse(token);
-    console.log(authenticateJWT(jsonToken));
     if (authenticateJWT(jsonToken) == 101) {
         let schedName = req.sanitize(req.params.scheduleName);
         for (let i = 0; i < db.getState().Schedule.length; i++) {
@@ -194,35 +193,39 @@ app.put('/api/schedule/:scheduleName/:auth_token', (req, res) => {
 
 //Task 5
 
-app.put('/api/make/schedule/:scheduleName', (req, res) => {
+app.put('/api/make/schedule/:scheduleName/:auth_token', (req, res) => {
+    const token = req.sanitize(req.params.auth_token);
+    const jsonToken = JSON.parse(token);
+    if (authenticateJWT(jsonToken)==101) {
+        let schedName = req.sanitize(req.params.scheduleName);
+        const schedule = req.body;
+        let course = req.sanitize(schedule.catalog_nbr);
+        let subject = req.sanitize(schedule.subject);
+        let sanitizedCourse = JSON.parse(`"${course}"`);
+        let sanitizedSubject = JSON.parse(`"${subject}"`);
 
-    let schedName = req.sanitize(req.params.scheduleName);
-    const schedule = req.body;
-    let course = req.sanitize(schedule.catalog_nbr);
-    let subject = req.sanitize(schedule.subject);
-    let sanitizedCourse = JSON.parse(`"${course}"`);
-    let sanitizedSubject = JSON.parse(`"${subject}"`);
-
-    for (let i = 0; i < db.getState().Schedule.length; i++) {
-        if (db.getState().Schedule[i].schedule_name.toUpperCase() === schedName.toUpperCase()) {
-            for (let k = 0; k < db.getState().Schedule[i].course_name.length; k++) {
-                if (db.getState().Schedule[i].course_name[k].toUpperCase() === sanitizedCourse.toUpperCase() && db.getState().Schedule[i].subject[k].toUpperCase() === sanitizedSubject.toUpperCase()) {
-                    db.getState().Schedule[i].course_name[k] = sanitizedCourse;
-                    db.getState().Schedule[i].subject[k] = sanitizedSubject;
-                    db.update('Schedule').write();
-                    res.status(200).send("Overwrite");
-                    return;
+        for (let i = 0; i < db.getState().Schedule.length; i++) {
+            if (db.getState().Schedule[i].schedule_name.toUpperCase() === schedName.toUpperCase()) {
+                for (let k = 0; k < db.getState().Schedule[i].course_name.length; k++) {
+                    if (db.getState().Schedule[i].course_name[k].toUpperCase() === sanitizedCourse.toUpperCase() && db.getState().Schedule[i].subject[k].toUpperCase() === sanitizedSubject.toUpperCase()) {
+                        db.getState().Schedule[i].course_name[k] = sanitizedCourse;
+                        db.getState().Schedule[i].subject[k] = sanitizedSubject;
+                        db.update('Schedule').write();
+                        res.status(200).send("Overwrite");
+                        return;
+                    }
                 }
+                db.getState().Schedule[i].course_name.push(sanitizedCourse);
+                db.getState().Schedule[i].subject.push(sanitizedSubject);
+                db.update('Schedule').write();
+                res.status(200).send("Added");
+                return;
             }
-            db.getState().Schedule[i].course_name.push(sanitizedCourse);
-            db.getState().Schedule[i].subject.push(sanitizedSubject);
-            db.update('Schedule').write();
-            res.status(200).send("Added");
-            return;
         }
+    }else{
+        res.json({message:"failed"});
     }
 
-    res.status(404).send("Name does not exist");
 });
 
 //Task 6

@@ -40,21 +40,24 @@ export class HomeComponent implements OnInit {
   createSchedule() {
     let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
     this.makeSchedule(JSON.stringify(authObject)).subscribe((res: any) => {
-      console.log(res);
-      let temp = JSON.parse(res);
-      console.log(temp);
+      let temp = JSON.parse(res.body);
       if (temp.message == "failed"){
         this.router.navigate(['']);
       }
     })
   }
 
-  addToSchedule(course) {
-    return this.service.put(`api/make/schedule/${this.schedName}`,{"subject":this.subjectName, "catalog_nbr": course} , {responseType: 'text'});
+  addToSchedule(course,auth:string) {
+    return this.service.put(`api/make/schedule/${this.schedName}/${auth}`,{"subject":this.subjectName, "catalog_nbr": course} , {responseType: 'text'});
   }
 
   addingSchedule(course) {
-    this.addToSchedule(course).subscribe((res: any) => {
+    let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
+    this.addToSchedule(course,JSON.stringify(authObject)).subscribe((res: any) => {
+      let temp = JSON.parse(res.body);
+      if (temp.message == "failed"){
+        this.router.navigate(['']);
+      }
       console.log(res);
     })
   }
