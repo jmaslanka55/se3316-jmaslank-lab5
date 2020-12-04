@@ -10,7 +10,6 @@ const fs = require('fs');
 //Read timetable file into data variable
 const data1 = fs.readFileSync('./Lab3-timetable-data.json');
 const data = JSON.parse(data1.toString());
-console.log(data.length);
 //Declare express sanitizer for input sanitization
 const expressSanitizer = require('express-sanitizer');
 app.use(express.json());
@@ -278,15 +277,17 @@ app.get(`/api/courses/keyword/:search`,(req,res)=>{
         namearr[i] = JSON.stringify(data[i].className);
         codearr[i] = JSON.stringify(data[i].catalog_nbr);
     }
+
     for (let j = 0; j<data.length;j++){
-        if(stringSimilarity.compareTwoStrings(keySearch, namearr[j]) > 0.6){
+        if(stringSimilarity.compareTwoStrings(keySearch.toUpperCase(), namearr[j]) > 0.60){
             resultarr.push(data[j]);
+            console.log(stringSimilarity.compareTwoStrings(keySearch.toUpperCase(), namearr[j]));
         }
-        if(stringSimilarity.compareTwoStrings(keySearch, codearr[j]) > 0.6){
+        if(stringSimilarity.compareTwoStrings(keySearch, codearr[j]) > 0.42){
             resultarr.push(data[j]);
+            console.log(stringSimilarity.compareTwoStrings(keySearch, codearr[j]));
         }
     }
-    console.log(resultarr);
     res.send(resultarr);
 });
 
