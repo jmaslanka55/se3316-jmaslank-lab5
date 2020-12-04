@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../http.service";
 import {HttpHeaders} from "@angular/common/http";
 import {catchError} from "rxjs/operators";
+import {Router, RouterModule} from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -19,7 +20,7 @@ export class HomeComponent implements OnInit {
     })
   };
   readonly schedule = {};
-  constructor(private service: HttpService) {
+  constructor(private service: HttpService,private router: Router) {
   }
 
   ngOnInit(): void {
@@ -32,13 +33,19 @@ export class HomeComponent implements OnInit {
       this.arr = res;
     });
   }
-  makeSchedule() {
-    return this.service.put(`api/schedule/${this.schedName}`, this.schedule, {responseType: 'text', observe: 'response'})
+  makeSchedule(auth:string) {
+    return this.service.put(`api/schedule/${this.schedName}/${auth}`, this.schedule, {responseType: 'text', observe: 'response'})
   }
 
   createSchedule() {
-    this.makeSchedule().subscribe((res: any) => {
+    let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
+    this.makeSchedule(JSON.stringify(authObject)).subscribe((res: any) => {
       console.log(res);
+      let temp = JSON.parse(res);
+      console.log(temp);
+      if (temp.message == "failed"){
+        this.router.navigate(['']);
+      }
     })
   }
 

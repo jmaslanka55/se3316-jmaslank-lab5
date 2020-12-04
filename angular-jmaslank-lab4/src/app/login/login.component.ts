@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../http.service";
+import {Router, RouterModule} from "@angular/router";
 
 
 @Component({
@@ -12,7 +13,7 @@ export class LoginComponent implements OnInit {
   password = "";
   emailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-  constructor(private service: HttpService) {
+  constructor(private service: HttpService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -30,12 +31,12 @@ export class LoginComponent implements OnInit {
       alert("invalid Email");
       return;
     }
-
     this.postLog({emailaddress: this.email, passcode: this.password}).subscribe((res: any) => {
       let temp = JSON.parse(res);
       localStorage.setItem("jwt", temp.accessToken);
       if (temp.message == "success") {
         document.getElementById("loginStatus").textContent = "Successfully logged in";
+        this.router.navigate(['Schedule']);
       } else if (temp.message == "deactivated") {
         document.getElementById("loginStatus").textContent = "Account deactivated contact admin";
       } else {

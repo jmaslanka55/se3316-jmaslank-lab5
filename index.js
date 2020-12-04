@@ -30,7 +30,7 @@ app.get('/api/', (req, res) => {
     res.send(data)
 });
 
-const accessTokenSecret = 'JmaslankSecretCode1234';
+
 
 //creates schedule database
 function create_schedule_db() {
@@ -53,7 +53,8 @@ app.listen(port, () => {
     console.log('Listening on port ' + port);
 });
 //JWT Authentication Method
-const authenticateJWT = (req) => {
+const accessTokenSecret = 'JmaslankSecretCode1234';
+const authenticateJWT = (req,res) => {
     const authHeader = req.headers.Authorization;
     const token = authHeader.split(' ')[1];
     if (authHeader.exp) {
@@ -76,20 +77,21 @@ app.post('/api/login', (req, res) => {
     for (let i = 0; i < dbUser.getState().Users.length; i++) {
         if (dbUser.getState().Users[i].emailaddress === email) {
             if (dbUser.getState().Users[i].password === passcode) {
-                if(dbUser.getState().Users[i].accountStatus.toLowerCase() === "deactivated"){
+                if (dbUser.getState().Users[i].accountStatus.toLowerCase() === "deactivated") {
                     res.json({message: "deactivated"});
                     return;
                 }
                 const accessToken = jwt.sign({
-                    emailaddress: email,
+                    emailAddress: email,
                     userPassword: passcode
-                }, accessTokenSecret, {expiresIn: "1hr"});
+                }, accessTokenSecret, {expiresIn: "100s"});
                 res.json({accessToken, message: "success"});
+                console.log("logged in");
                 return;
             }
         }
     }
-    res.json({message:'Username or password incorrect'});
+    res.json({message: 'Username or password incorrect'});
 });
 
 //Method to create a new user and add them to the User database
@@ -100,11 +102,16 @@ app.put('/api/users', (req, res) => {
     let passcode = req.sanitize(userData.finalPassword);
     for (let i = 0; i < dbUser.getState().Users.length; i++) {
         if (dbUser.getState().Users[i].emailaddress === email) {
-            res.json({message:"Email already registered"});
+            res.json({message: "Email already registered"});
             return;
         }
     }
-    dbUser.get('Users').push({userName: userName, emailaddress: email, password: passcode, accountStatus: "Active"}).write();
+    dbUser.get('Users').push({
+        userName: userName,
+        emailaddress: email,
+        password: passcode,
+        accountStatus: "Active"
+    }).write();
     dbUser.update('Users').write();
     res.json({message: "Account created"});
 
@@ -165,16 +172,23 @@ app.get('/api/timetable/:subjectCode/:course_code/:course_component?', (req, res
 });
 
 //task 4
-app.put('/api/schedule/:scheduleName', (req, res) => {
-    let schedName = req.sanitize(req.params.scheduleName);
-    for (let i = 0; i < db.getState().Schedule.length; i++) {
-        if (db.getState().Schedule[i].schedule_name === schedName) {
-            res.status(404).send("Name already exists");
-            return;
+app.put('/api/schedule/:scheduleName/:auth_token', (req, res) => {
+    const token = req.sanitize(req.params.auth_token);
+    const jsonToken = JSON.parse(token);
+    console.log(authenticateJWT(jsonToken));
+    if (authenticateJWT(jsonToken) == 101) {
+        let schedName = req.sanitize(req.params.scheduleName);
+        for (let i = 0; i < db.getState().Schedule.length; i++) {
+            if (db.getState().Schedule[i].schedule_name === schedName) {
+                res.status(404).send("Name already exists");
+                return;
+            }
         }
+        db.get('Schedule').push({schedule_name: schedName, description: [], subject: [], course_name: [], visibility: "private"}).write();
+        res.status(200).send();
+    } else {
+        res.json({message: "failed"});
     }
-    db.get('Schedule').push({schedule_name: schedName, subject: [], course_name: []}).write();
-    res.status(200).send("Added");
 });
 
 
@@ -268,22 +282,22 @@ app.post('/api/schedulelist', (req, res) => {
 
 //Search Courses by keywords
 
-app.get(`/api/courses/keyword/:search`,(req,res)=>{
+app.get(`/api/courses/keyword/:search`, (req, res) => {
     let namearr = [];
     let codearr = [];
     let resultarr = [];
     let keySearch = req.sanitize(req.params.search);
-    for (let i = 0; i < data.length;i++){
+    for (let i = 0; i < data.length; i++) {
         namearr[i] = JSON.stringify(data[i].className);
         codearr[i] = JSON.stringify(data[i].catalog_nbr);
     }
 
-    for (let j = 0; j<data.length;j++){
-        if(stringSimilarity.compareTwoStrings(keySearch.toUpperCase(), namearr[j]) > 0.60){
+    for (let j = 0; j < data.length; j++) {
+        if (stringSimilarity.compareTwoStrings(keySearch.toUpperCase(), namearr[j]) > 0.60) {
             resultarr.push(data[j]);
             console.log(stringSimilarity.compareTwoStrings(keySearch.toUpperCase(), namearr[j]));
         }
-        if(stringSimilarity.compareTwoStrings(keySearch, codearr[j]) > 0.44){
+        if (stringSimilarity.compareTwoStrings(keySearch, codearr[j]) > 0.44) {
             resultarr.push(data[j]);
             console.log(stringSimilarity.compareTwoStrings(keySearch, codearr[j]));
         }
