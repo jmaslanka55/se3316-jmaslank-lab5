@@ -55,12 +55,12 @@ export class ListComponent implements OnInit {
     })
   }
 
-  getSubjectCourse(course) {
-    return this.service.get(`api/timetable/${this.subjectVal}/${course}`);
+  getSubjectCourse() {
+    return this.service.get(`api/timetable/${this.subjectVal}/${this.courseVal}`);
   }
 
-  searchSubjectCourse(course) {
-    this.getSubjectCourse(course).subscribe((res: any) => {
+  searchSubjectCourse() {
+    this.getSubjectCourse().subscribe((res: any) => {
       res = JSON.stringify(res[0].className) + JSON.stringify(res[0].catalog_nbr) + JSON.stringify(res[0].catalog_description) + "Starts at: "
       + JSON.stringify(res[0].course_info[0].start_time) + " Ends at: " +(res[0].course_info[0].end_time) ;
       document.getElementById("DisplaySearch").textContent = res;
@@ -71,12 +71,12 @@ export class ListComponent implements OnInit {
   }
 
 
-  getSubjectCourseComponent(course) {
-    return this.service.get(`api/timetable/${this.subjectVal}/${course}/${this.component}`);
+  getSubjectCourseComponent() {
+    return this.service.get(`api/timetable/${this.subjectVal}/${this.courseVal}/${this.component}`);
   }
 
-  searchSubjectCourseComponent(course) {
-    this.getSubjectCourseComponent(course).subscribe((res: any) => {
+  searchSubjectCourseComponent() {
+    this.getSubjectCourseComponent().subscribe((res: any) => {
       res = JSON.stringify(res[0].className) + JSON.stringify(res[0].catalog_nbr) + JSON.stringify(res[0].catalog_description) + "Starts at: "
         + JSON.stringify(res[0].course_info[0].start_time) + " Ends at: " +(res[0].course_info[0].end_time)
         + JSON.stringify(res[0].course_info[0].ssr_component);

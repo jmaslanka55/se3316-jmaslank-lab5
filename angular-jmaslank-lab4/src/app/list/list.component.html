@@ -6,15 +6,16 @@
 <div class="searchBox">
   <input type="text" [(ngModel)]="subjectVal" placeholder="Search by subject">
 
-  <button (click) = populate()>Show course code pairs</button>
+
   <br>
-  <select #dropdown>
+  <input type = "text"[(ngModel)]="courseVal" placeholder= "Course code">
+  <!--<select #dropdown>
     <option *ngFor="let x of arr2">{{ x }}</option>
-  </select>
-  <button (click)=searchSubjectCourse(dropdown.value)>Search Subject/Course</button>
+  </select>-->
+  <button (click)=searchSubjectCourse()>Search Subject/Course</button>
   <br>
   <input type="text" [(ngModel)]="component" placeholder="Search by component">
-  <button (click)=searchSubjectCourseComponent(dropdown.value)>Search Component</button>
+  <button (click)=searchSubjectCourseComponent()>Search Component</button>
 </div>
 <p id="DisplaySearch"></p>
 <div class="ShowAll">

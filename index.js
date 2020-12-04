@@ -152,7 +152,7 @@ app.get('/api/courses/:subject_code', (req, res) => {
 
 app.get('/api/timetable/:subjectCode/:course_code/:course_component?', (req, res) => {
     const course = data.filter(a => a.subject.toString().toLowerCase() === req.sanitize(req.params.subjectCode.toString().toLowerCase()));
-    const course_code = course.filter(a => a.catalog_nbr.toString().toLowerCase() === req.sanitize(req.params.course_code.toString().toLowerCase()));
+    const course_code = course.filter(a => a.catalog_nbr.toString().toLowerCase().includes(req.sanitize(req.params.course_code.toString().toLowerCase())));
     if (course === undefined || course.length == 0 || course_code === undefined || course_code.length == 0) {
         res.status(404).send("Subject with code " + req.sanitize(req.params.subjectCode) + " code " + req.sanitize(req.params.course_code) + " does not exist");
     } else {
