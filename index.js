@@ -31,7 +31,6 @@ app.get('/api/', (req, res) => {
 });
 
 
-
 //creates schedule database
 function create_schedule_db() {
     db.defaults({
@@ -54,7 +53,7 @@ app.listen(port, () => {
 });
 //JWT Authentication Method
 const accessTokenSecret = 'JmaslankSecretCode1234';
-const authenticateJWT = (req,res) => {
+const authenticateJWT = (req, res) => {
     const authHeader = req.headers.Authorization;
     const token = authHeader.split(' ')[1];
     if (authHeader.exp) {
@@ -84,7 +83,7 @@ app.post('/api/login', (req, res) => {
                 const accessToken = jwt.sign({
                     emailAddress: email,
                     userPassword: passcode
-                }, accessTokenSecret, {expiresIn: "5s"});
+                }, accessTokenSecret, {expiresIn: "100s"});
                 res.json({accessToken, message: "success"});
                 console.log("logged in");
                 return;
@@ -183,7 +182,13 @@ app.put('/api/schedule/:scheduleName/:auth_token', (req, res) => {
                 return;
             }
         }
-        db.get('Schedule').push({schedule_name: schedName, description: [], subject: [], course_name: [], visibility: "private"}).write();
+        db.get('Schedule').push({
+            schedule_name: schedName,
+            description: [],
+            subject: [],
+            course_name: [],
+            visibility: "private"
+        }).write();
         res.status(200).send();
     } else {
         res.json({message: "failed"});
@@ -196,7 +201,7 @@ app.put('/api/schedule/:scheduleName/:auth_token', (req, res) => {
 app.put('/api/make/schedule/:scheduleName/:auth_token', (req, res) => {
     const token = req.sanitize(req.params.auth_token);
     const jsonToken = JSON.parse(token);
-    if (authenticateJWT(jsonToken)==101) {
+    if (authenticateJWT(jsonToken) == 101) {
         let schedName = req.sanitize(req.params.scheduleName);
         const schedule = req.body;
         let course = req.sanitize(schedule.catalog_nbr);
@@ -222,10 +227,45 @@ app.put('/api/make/schedule/:scheduleName/:auth_token', (req, res) => {
                 return;
             }
         }
-    }else{
-        res.json({message:"failed"});
+    } else {
+        res.json({message: "failed"});
     }
 
+});
+
+app.put('/api/make/description/:schedName/:auth_token', (req, res) => {
+    const token = req.sanitize(req.params.auth_token);
+    const jsonToken = JSON.parse(token);
+    if (authenticateJWT(jsonToken) === 101) {
+        const desc = req.body;
+        let descrip = req.sanitize(desc.description);
+        let sanitizeDesc = JSON.parse(`"${descrip}"`);
+        let schedName = req.sanitize(req.params.schedName);
+        for (let i = 0; i < db.getState().Schedule.length; i++) {
+            if (db.getState().Schedule[i].schedule_name.toUpperCase() === schedName.toUpperCase()) {
+                db.getState().Schedule[i].description = sanitizeDesc;
+                db.update('Schedule').write();
+                res.status(200).send("added")
+                return;
+            }
+        }
+    }
+});
+app.post(`/api/set/public/:schedName/:auth_token`, (req,res)=>{
+    const token = req.sanitize(req.params.auth_token);
+    const jsonToken = JSON.parse(token);
+    if (authenticateJWT(jsonToken) === 101) {
+        let schedName = req.sanitize(req.params.schedName);
+        for (let i = 0; i < db.getState().Schedule.length; i++) {
+            if (db.getState().Schedule[i].schedule_name.toUpperCase() === schedName.toUpperCase()){
+                db.getState().Schedule[i].visibility = "Public";
+                db.update('Schedule').write();
+                res.status(200).send("set public")
+                return;
+            }
+        }
+
+    }
 });
 
 //Task 6
@@ -274,13 +314,7 @@ app.get('/api/show/schedule', (req, res) => {
     res.send(schedList);
 });
 
-//Task 9 Delete all schedules
-app.post('/api/schedulelist', (req, res) => {
-    for (let i = 0; i < db.getState().Schedule.length; i++) {
-        db.set('Schedule', []).write();
-        res.send("Reset schedule list");
-    }
-});
+
 
 
 //Search Courses by keywords

@@ -14,6 +14,7 @@ export class HomeComponent implements OnInit {
   subjectName;
   courseCode;
   arr;
+  description;
   readonly httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -33,19 +34,7 @@ export class HomeComponent implements OnInit {
       this.arr = res;
     });
   }
-  makeSchedule(auth:string) {
-    return this.service.put(`api/schedule/${this.schedName}/${auth}`, this.schedule, {responseType: 'text', observe: 'response'})
-  }
 
-  createSchedule() {
-    let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
-    this.makeSchedule(JSON.stringify(authObject)).subscribe((res: any) => {
-      let temp = JSON.parse(res.body);
-      if (temp.message == "failed"){
-        this.router.navigate(['']);
-      }
-    })
-  }
 
   addToSchedule(course,auth:string) {
     return this.service.put(`api/make/schedule/${this.schedName}/${auth}`,{"subject":this.subjectName, "catalog_nbr": course} , {responseType: 'text'});
@@ -103,6 +92,41 @@ export class HomeComponent implements OnInit {
       document.getElementById("ShowResults").textContent = JSON.stringify(res);
     })
   }
+  setPublic(auth:string){
+    return this.service.post(`api/set/public/${this.schedName}/${auth}`, this.schedule,{responseType: 'text'});
+  }
+  publicCall(){
+    let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
+    this.setPublic(JSON.stringify(authObject)).subscribe((res: any) => {
+      let temp = JSON.parse(res.body);
+      if (temp.message == "failed"){
+        this.router.navigate(['']);
+      }
+    })
+  }
+  makeDesc(auth:string){
+    return this.service.put(`api/make/description/${this.schedName}/${auth}`,{"description": this.description}, {responseType: 'text'});
+  }
+  descCall(){
+    let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
+    this.makeDesc(JSON.stringify(authObject)).subscribe((res: any) => {
+      let temp = JSON.parse(res.body);
+      if (temp.message == "failed"){
+        this.router.navigate(['']);
+      }
+    })
+  }
+  makeSchedule(auth:string) {
+    return this.service.put(`api/schedule/${this.schedName}/${auth}`, this.schedule, {responseType: 'text', observe: 'response'})
+  }
 
-
+  createSchedule() {
+    let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
+    this.makeSchedule(JSON.stringify(authObject)).subscribe((res: any) => {
+      let temp = JSON.parse(res.body);
+      if (temp.message == "failed"){
+        this.router.navigate(['']);
+      }
+    })
+  }
 }
