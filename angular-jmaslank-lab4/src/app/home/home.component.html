@@ -25,6 +25,10 @@
   <input type = "text" [(ngModel)]="password" placeholder="Current Password">
   <input type = "text" [(ngModel)]="newpassword" placeholder="New password">
   <button (click) = callChangePass()>Change password</button>
+  <button (click) = callUserCourses()>Show User's Courses</button>
+  <select #dropdown>
+    <option *ngFor = "let x of lists">{{x}}</option>
+  </select>
 </div>
 
 <textarea id ="ShowResults" type = "textarea"></textarea>

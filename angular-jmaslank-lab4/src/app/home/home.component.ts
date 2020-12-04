@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit {
   email;
   password;
   newpassword;
+  lists;
   readonly httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -138,6 +139,16 @@ export class HomeComponent implements OnInit {
   callChangePass(){
     let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
     this.changePass(JSON.stringify(authObject)).subscribe((res: any) => {
+    })
+  }
+  showUserCourses(auth:string){
+    return this.service.get(`api/show/lists/${auth}`)
+  }
+  callUserCourses(){
+    let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
+    this.showUserCourses(JSON.stringify(authObject)).subscribe((res:any)=>{
+      console.log(res);
+      this.lists = res;
     })
   }
 }

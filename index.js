@@ -1,6 +1,6 @@
 //Declare express and fs as well as port number
 
-
+const jwt_decode = require('jwt-decode')
 const jwt = require('jsonwebtoken');
 var stringSimilarity = require('string-similarity');
 const express = require('express');
@@ -187,6 +187,7 @@ app.post(`/api/updatepass/:passcode/:email/:auth_token`, (req, res) => {
 app.put('/api/schedule/:scheduleName/:auth_token', (req, res) => {
     const token = req.sanitize(req.params.auth_token);
     const jsonToken = JSON.parse(token);
+    let decoded = jwt_decode(token);
     if (authenticateJWT(jsonToken) == 101) {
         let schedName = req.sanitize(req.params.scheduleName);
         for (let i = 0; i < db.getState().Schedule.length; i++) {
@@ -201,8 +202,8 @@ app.put('/api/schedule/:scheduleName/:auth_token', (req, res) => {
             subject: [],
             course_name: [],
             visibility: "private",
-            user: "",
-            time:"",
+            user: decoded.emailAddress,
+            time: Math.floor(Date.now() /1000),
         }).write();
         res.status(200).send();
     } else {
@@ -280,6 +281,22 @@ app.post(`/api/set/public/:schedName/:auth_token`, (req,res)=>{
             }
         }
 
+    }
+});
+
+app.get(`/api/show/lists/:auth_token`, (req,res)=>{
+    const token = req.sanitize(req.params.auth_token);
+    const jsonToken = JSON.parse(token);
+    let decoded = jwt_decode(token);
+    if (authenticateJWT(jsonToken) === 101) {
+        let nameList = [];
+
+        for (let i = 0; i < db.getState().Schedule.length; i++) {
+            if (decoded.emailAddress == db.getState().Schedule[i].user){
+                nameList.push(db.getState().Schedule[i].schedule_name);
+            }
+        }
+        res.send(nameList);
     }
 });
 //*************************************************************************************************************************************************************************
