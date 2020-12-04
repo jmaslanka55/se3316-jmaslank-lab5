@@ -106,7 +106,8 @@ app.put('/api/users', (req, res) => {
     }
     dbUser.get('Users').push({userName: userName, emailaddress: email, password: passcode, accountStatus: "Active"}).write();
     dbUser.update('Users').write();
-    res.status(200).send("Account created");
+    res.json({message: "Account created"});
+
 });
 
 
