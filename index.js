@@ -73,6 +73,7 @@ app.post('/api/login', (req, res) => {
     const logData = req.body;
     let email = req.sanitize(logData.emailaddress);
     let passcode = req.sanitize(logData.passcode);
+    let userName = req.sanitize(logData.name);
     for (let i = 0; i < dbUser.getState().Users.length; i++) {
         if (dbUser.getState().Users[i].emailaddress === email) {
             if (dbUser.getState().Users[i].password === passcode) {
@@ -82,7 +83,8 @@ app.post('/api/login', (req, res) => {
                 }
                 const accessToken = jwt.sign({
                     emailAddress: email,
-                    userPassword: passcode
+                    userPassword: passcode,
+                    name: userName,
                 }, accessTokenSecret, {expiresIn: "1h"});
                 res.json({accessToken, message: "success"});
                 return;
@@ -118,6 +120,15 @@ app.put('/api/users', (req, res) => {
     dbUser.update('Users').write();
     res.json({message: "Account created"});
 
+});
+app.get('/api/username/:email', (req, res) => {
+    let email = req.sanitize(req.params.email);
+    for (let i = 0; i < dbUser.getState().Users.length; i++) {
+        if (dbUser.getState().Users[i].emailaddress === email) {
+            console.log(dbUser.getState().Users[i].userName)
+            res.send(dbUser.getState().Users[i].userName);
+        }
+    }
 });
 //********************************************************************ACTIONS FOR UNAUTHORIZED USERS************************************************************
 app.get('/api/timetable/:subjectCode/:course_code/:course_component?', (req, res) => {
@@ -183,7 +194,6 @@ app.post(`/api/updatepass/:passcode/:email/:auth_token`, (req, res) => {
 });
 
 
-
 app.put('/api/schedule/:scheduleName/:auth_token', (req, res) => {
     const token = req.sanitize(req.params.auth_token);
     const jsonToken = JSON.parse(token);
@@ -203,7 +213,8 @@ app.put('/api/schedule/:scheduleName/:auth_token', (req, res) => {
             course_name: [],
             visibility: "private",
             user: decoded.emailAddress,
-            time: Math.floor(Date.now() /1000),
+            time: Math.floor(Date.now() / 1000),
+            name: decoded.name
         }).write();
         res.status(200).send();
     } else {
@@ -260,6 +271,7 @@ app.put('/api/make/description/:schedName/:auth_token', (req, res) => {
         for (let i = 0; i < db.getState().Schedule.length; i++) {
             if (db.getState().Schedule[i].schedule_name.toUpperCase() === schedName.toUpperCase()) {
                 db.getState().Schedule[i].description = sanitizeDesc;
+                db.getState().Schedule[i].time = Math.floor(Date.now() / 1000);
                 db.update('Schedule').write();
                 res.status(200).send("added")
                 return;
@@ -267,14 +279,15 @@ app.put('/api/make/description/:schedName/:auth_token', (req, res) => {
         }
     }
 });
-app.post(`/api/set/public/:schedName/:auth_token`, (req,res)=>{
+app.post(`/api/set/public/:schedName/:auth_token`, (req, res) => {
     const token = req.sanitize(req.params.auth_token);
     const jsonToken = JSON.parse(token);
     if (authenticateJWT(jsonToken) === 101) {
         let schedName = req.sanitize(req.params.schedName);
         for (let i = 0; i < db.getState().Schedule.length; i++) {
-            if (db.getState().Schedule[i].schedule_name.toUpperCase() === schedName.toUpperCase()){
+            if (db.getState().Schedule[i].schedule_name.toUpperCase() === schedName.toUpperCase()) {
                 db.getState().Schedule[i].visibility = "public";
+                db.getState().Schedule[i].time = Math.floor(Date.now() / 1000);
                 db.update('Schedule').write();
                 res.status(200).send("set public")
                 return;
@@ -284,7 +297,7 @@ app.post(`/api/set/public/:schedName/:auth_token`, (req,res)=>{
     }
 });
 
-app.get(`/api/show/lists/:auth_token`, (req,res)=>{
+app.get(`/api/show/lists/:auth_token`, (req, res) => {
     const token = req.sanitize(req.params.auth_token);
     const jsonToken = JSON.parse(token);
     let decoded = jwt_decode(token);
@@ -292,11 +305,29 @@ app.get(`/api/show/lists/:auth_token`, (req,res)=>{
         let nameList = [];
 
         for (let i = 0; i < db.getState().Schedule.length; i++) {
-            if (decoded.emailAddress == db.getState().Schedule[i].user){
+            if (decoded.emailAddress == db.getState().Schedule[i].user) {
                 nameList.push(db.getState().Schedule[i].schedule_name);
             }
         }
         res.send(nameList);
+    }
+});
+app.post('/api/remove/schedule/:scheduleName/:auth_token', (req, res) => {
+    let schedName = req.sanitize(req.params.scheduleName);
+    const token = req.sanitize(req.params.auth_token);
+    const jsonToken = JSON.parse(token);
+    let decoded = jwt_decode(token)
+    if (authenticateJWT(jsonToken) === 101) {
+        for (let i = 0; i < db.getState().Schedule.length; i++) {
+            if (db.getState().Schedule[i].schedule_name.toUpperCase() === schedName.toUpperCase() &&
+                decoded.emailAddress.toUpperCase() == db.getState().Schedule[i].user.toUpperCase()) {
+                schedName = db.getState().Schedule[i].schedule_name;
+                db.get('Schedule').remove({schedule_name: schedName}).write();
+                res.status(200).send("deleted");
+                return;
+            }
+        }
+        res.status(404).send("does not exist");
     }
 });
 //*************************************************************************************************************************************************************************
@@ -361,18 +392,7 @@ app.get('/api/display/schedule/:scheduleName', (req, res) => {
 });
 
 //Allow to remove schedule by name
-app.post('/api/remove/schedule/:scheduleName', (req, res) => {
-    let schedName = req.sanitize(req.params.scheduleName);
-    for (let i = 0; i < db.getState().Schedule.length; i++) {
-        if (db.getState().Schedule[i].schedule_name.toUpperCase() === schedName.toUpperCase()) {
-            schedName = db.getState().Schedule[i].schedule_name;
-            db.get('Schedule').remove({schedule_name: schedName}).write();
-            res.status(200).send("deleted");
-            return;
-        }
-    }
-    res.status(404).send("does not exist");
-});
+
 //get list of all schedule names (Task 8)
 app.get('/api/show/schedule', (req, res) => {
     let schedList = [];

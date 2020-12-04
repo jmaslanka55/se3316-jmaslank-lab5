@@ -12,6 +12,7 @@ export class LoginComponent implements OnInit {
   email = "";
   password = "";
   emailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  name = "";
 
   constructor(private service: HttpService, private router: Router) {
   }
@@ -31,7 +32,11 @@ export class LoginComponent implements OnInit {
       alert("invalid Email");
       return;
     }
-    this.postLog({emailaddress: this.email, passcode: this.password}).subscribe((res: any) => {
+    this.getName().subscribe((res:any)=>{
+      this.name = res;
+      console.log(res)
+    });
+    this.postLog({emailaddress: this.email, passcode: this.password, name: this.name}).subscribe((res: any) => {
       let temp = JSON.parse(res);
       localStorage.setItem("jwt", temp.accessToken);
       if (temp.message == "success") {
@@ -47,6 +52,9 @@ export class LoginComponent implements OnInit {
 
   postLog(info: object) {
     return this.service.post('api/login', info, {responseType: 'text'})
+  }
+  getName(){
+    return this.service.get(`api/username/${this.email}`);
   }
 
 }

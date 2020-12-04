@@ -55,15 +55,7 @@ export class HomeComponent implements OnInit {
     })
   }
 
-  removeSchedule() {
-    return this.service.post(`api/remove/schedule/${this.schedName}`,this.schedule, {responseType: 'text'});
-  }
 
-  deleteSchedule() {
-    this.removeSchedule().subscribe((res:any)=>{
-      console.log(res);
-    })
-  }
   searchSchedule(){
     return this.service.get(`api/display/schedule/${this.schedName}`)
   }
@@ -147,8 +139,21 @@ export class HomeComponent implements OnInit {
   callUserCourses(){
     let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
     this.showUserCourses(JSON.stringify(authObject)).subscribe((res:any)=>{
-      console.log(res);
       this.lists = res;
     })
+  }
+  removeSchedule(auth:string,schedName:string) {
+    return this.service.post(`api/remove/schedule/${schedName}/${auth}`,this.schedule, {responseType: 'text'});
+  }
+
+  deleteSchedule(schedName) {
+    let confirmation = prompt("Please type CONFIRM to confirm deletion of list");
+    if (confirmation =="CONFIRM") {
+      let authObject = {headers: {Authorization: "Bearer " + localStorage.getItem("jwt")}};
+      this.removeSchedule(JSON.stringify(authObject), schedName).subscribe((res: any) => {
+      })
+    } else {
+      alert("Not Deleted");
+    }
   }
 }

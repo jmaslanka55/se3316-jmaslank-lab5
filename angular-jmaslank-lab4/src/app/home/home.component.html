@@ -26,9 +26,10 @@
   <input type = "text" [(ngModel)]="newpassword" placeholder="New password">
   <button (click) = callChangePass()>Change password</button>
   <button (click) = callUserCourses()>Show User's Courses</button>
-  <select #dropdown>
+  <select #dropdown2>
     <option *ngFor = "let x of lists">{{x}}</option>
   </select>
+  <button (click) = deleteSchedule(dropdown2.value)> Delete Schedule (Dropdown) </button>
 </div>
 
 <textarea id ="ShowResults" type = "textarea"></textarea>
