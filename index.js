@@ -83,9 +83,8 @@ app.post('/api/login', (req, res) => {
                 const accessToken = jwt.sign({
                     emailAddress: email,
                     userPassword: passcode
-                }, accessTokenSecret, {expiresIn: "100s"});
+                }, accessTokenSecret, {expiresIn: "1h"});
                 res.json({accessToken, message: "success"});
-                console.log("logged in");
                 return;
             }
         }
@@ -93,6 +92,10 @@ app.post('/api/login', (req, res) => {
     res.json({message: 'Username or password incorrect'});
 });
 
+//Method to create a new user and add them to the User database
+
+
+//********************************************************************ACTIONS FOR USER CREATION************************************************************
 //Method to create a new user and add them to the User database
 app.put('/api/users', (req, res) => {
     let userData = req.body;
@@ -109,53 +112,14 @@ app.put('/api/users', (req, res) => {
         userName: userName,
         emailaddress: email,
         password: passcode,
-        accountStatus: "Active"
+        accountStatus: "Active",
+        role: "user"
     }).write();
     dbUser.update('Users').write();
     res.json({message: "Account created"});
 
 });
-
-
-//TASK 1
-function get_subject_classname() {
-    let returned_value = {};
-    //loop through data and store subject and classname in array to be returned
-    for (let i = 0; i < data.length; i++) {
-        returned_value["Subject code " + (i + 1)] = data[i].subject;
-        returned_value["className " + (i + 1)] = data[i].className;
-    }
-    //return array
-    return returned_value;
-}
-
-//get request for subjects
-app.get('/api/subject', (req, res) => {
-
-    res.send(get_subject_classname());
-
-});
-
-//Task 2
-function get_coursecode(courseCode) {
-    let returned_value = [];
-    returned_value.subject = courseCode[0].subject;
-    for (let i = 0; i < courseCode.length; i++) {
-        returned_value.push(courseCode[i].catalog_nbr);
-    }
-
-    return returned_value;
-}
-
-app.get('/api/courses/:subject_code', (req, res) => {
-    const course = data.filter(a => a.subject.toString().toLowerCase() === req.sanitize(req.params.subject_code.toString().toLowerCase()));
-    if (course === undefined || course.length == 0) res.status(404).send("Subject with code " + req.sanitize(req.params.subject_code) + " was not found ");
-    res.send(get_coursecode(course));
-
-});
-
-//TASK 3
-
+//********************************************************************ACTIONS FOR UNAUTHORIZED USERS************************************************************
 app.get('/api/timetable/:subjectCode/:course_code/:course_component?', (req, res) => {
     const course = data.filter(a => a.subject.toString().toLowerCase() === req.sanitize(req.params.subjectCode.toString().toLowerCase()));
     const course_code = course.filter(a => a.catalog_nbr.toString().toLowerCase().includes(req.sanitize(req.params.course_code.toString().toLowerCase())));
@@ -170,7 +134,56 @@ app.get('/api/timetable/:subjectCode/:course_code/:course_component?', (req, res
     }
 });
 
-//task 4
+//Search Courses by keywords
+
+app.get(`/api/courses/keyword/:search`, (req, res) => {
+    let namearr = [];
+    let codearr = [];
+    let resultarr = [];
+    let keySearch = req.sanitize(req.params.search);
+    for (let i = 0; i < data.length; i++) {
+        namearr[i] = JSON.stringify(data[i].className);
+        codearr[i] = JSON.stringify(data[i].catalog_nbr);
+    }
+
+    for (let j = 0; j < data.length; j++) {
+        if (stringSimilarity.compareTwoStrings(keySearch.toUpperCase(), namearr[j]) > 0.60) {
+            resultarr.push(data[j]);
+            console.log(stringSimilarity.compareTwoStrings(keySearch.toUpperCase(), namearr[j]));
+        }
+        if (stringSimilarity.compareTwoStrings(keySearch, codearr[j]) > 0.44) {
+            resultarr.push(data[j]);
+            console.log(stringSimilarity.compareTwoStrings(keySearch, codearr[j]));
+        }
+    }
+    console.log(resultarr);
+    res.send(resultarr);
+});
+
+//********************************************************************ACTIONS FOR AUTHORIZED USERS************************************************************
+app.post(`/api/updatepass/:passcode/:email/:auth_token`, (req, res) => {
+    const token = req.sanitize(req.params.auth_token);
+    const jsonToken = JSON.parse(token);
+    if (authenticateJWT(jsonToken) == 101) {
+        let passcode = req.sanitize(req.params.passcode)
+        let email = req.sanitize(req.params.email);
+        let code = req.body;
+        let newCode = code.newPass;
+        for (let i = 0; i < dbUser.getState().Users.length; i++) {
+            if (dbUser.getState().Users[i].emailaddress === email) {
+                if (dbUser.getState().Users[i].password === passcode) {
+                    dbUser.getState().Users[i].password = newCode;
+                    dbUser.update('Users').write();
+                    return;
+                }
+            }
+        }
+        res.json({message: "failed"})
+    }
+});
+
+
+
 app.put('/api/schedule/:scheduleName/:auth_token', (req, res) => {
     const token = req.sanitize(req.params.auth_token);
     const jsonToken = JSON.parse(token);
@@ -187,7 +200,9 @@ app.put('/api/schedule/:scheduleName/:auth_token', (req, res) => {
             description: [],
             subject: [],
             course_name: [],
-            visibility: "private"
+            visibility: "private",
+            user: "",
+            time:"",
         }).write();
         res.status(200).send();
     } else {
@@ -258,7 +273,7 @@ app.post(`/api/set/public/:schedName/:auth_token`, (req,res)=>{
         let schedName = req.sanitize(req.params.schedName);
         for (let i = 0; i < db.getState().Schedule.length; i++) {
             if (db.getState().Schedule[i].schedule_name.toUpperCase() === schedName.toUpperCase()){
-                db.getState().Schedule[i].visibility = "Public";
+                db.getState().Schedule[i].visibility = "public";
                 db.update('Schedule').write();
                 res.status(200).send("set public")
                 return;
@@ -267,6 +282,46 @@ app.post(`/api/set/public/:schedName/:auth_token`, (req,res)=>{
 
     }
 });
+//*************************************************************************************************************************************************************************
+
+
+//TASK 1
+function get_subject_classname() {
+    let returned_value = {};
+    //loop through data and store subject and classname in array to be returned
+    for (let i = 0; i < data.length; i++) {
+        returned_value["Subject code " + (i + 1)] = data[i].subject;
+        returned_value["className " + (i + 1)] = data[i].className;
+    }
+    //return array
+    return returned_value;
+}
+
+//get request for subjects
+app.get('/api/subject', (req, res) => {
+
+    res.send(get_subject_classname());
+
+});
+
+//Task 2
+function get_coursecode(courseCode) {
+    let returned_value = [];
+    returned_value.subject = courseCode[0].subject;
+    for (let i = 0; i < courseCode.length; i++) {
+        returned_value.push(courseCode[i].catalog_nbr);
+    }
+
+    return returned_value;
+}
+
+app.get('/api/courses/:subject_code', (req, res) => {
+    const course = data.filter(a => a.subject.toString().toLowerCase() === req.sanitize(req.params.subject_code.toString().toLowerCase()));
+    if (course === undefined || course.length == 0) res.status(404).send("Subject with code " + req.sanitize(req.params.subject_code) + " was not found ");
+    res.send(get_coursecode(course));
+
+});
+
 
 //Task 6
 app.get('/api/display/schedule/:scheduleName', (req, res) => {
@@ -317,31 +372,6 @@ app.get('/api/show/schedule', (req, res) => {
 
 
 
-//Search Courses by keywords
-
-app.get(`/api/courses/keyword/:search`, (req, res) => {
-    let namearr = [];
-    let codearr = [];
-    let resultarr = [];
-    let keySearch = req.sanitize(req.params.search);
-    for (let i = 0; i < data.length; i++) {
-        namearr[i] = JSON.stringify(data[i].className);
-        codearr[i] = JSON.stringify(data[i].catalog_nbr);
-    }
-
-    for (let j = 0; j < data.length; j++) {
-        if (stringSimilarity.compareTwoStrings(keySearch.toUpperCase(), namearr[j]) > 0.60) {
-            resultarr.push(data[j]);
-            console.log(stringSimilarity.compareTwoStrings(keySearch.toUpperCase(), namearr[j]));
-        }
-        if (stringSimilarity.compareTwoStrings(keySearch, codearr[j]) > 0.44) {
-            resultarr.push(data[j]);
-            console.log(stringSimilarity.compareTwoStrings(keySearch, codearr[j]));
-        }
-    }
-    console.log(resultarr);
-    res.send(resultarr);
-});
 
 
 

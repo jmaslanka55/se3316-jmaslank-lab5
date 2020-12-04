@@ -8,8 +8,8 @@
   <!--<button (click) = deleteSchedule()>Delete Schedule</button>
   <button (click) = deleteAll()>Delete All Schedule</button>-->
   <button (click) = listAllSchedules()>List Schedules</button>
-
 </div>
+<br>
 <div class = "AddingPairs">
   <input type="text" [(ngModel)]="subjectName" placeholder="Subject">
   <button (click) = populate()>Show course code pairs</button>
@@ -19,5 +19,13 @@
   <button (click) = "addingSchedule(dropdown.value)">Add pair to schedule</button>
   <button (click) = scheduleSearch()>Timetable by Schedule Name</button>
 </div>
+<br>
+<div class = "Change password">
+  <input type = "email" [(ngModel)]="email" placeholder="E-mail">
+  <input type = "text" [(ngModel)]="password" placeholder="Current Password">
+  <input type = "text" [(ngModel)]="newpassword" placeholder="New password">
+  <button (click) = callChangePass()>Change password</button>
+</div>
+
 <textarea id ="ShowResults" type = "textarea"></textarea>
 <P id = "ERROR"></P>

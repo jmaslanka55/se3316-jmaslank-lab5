@@ -15,6 +15,9 @@ export class HomeComponent implements OnInit {
   courseCode;
   arr;
   description;
+  email;
+  password;
+  newpassword;
   readonly httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -127,6 +130,14 @@ export class HomeComponent implements OnInit {
       if (temp.message == "failed"){
         this.router.navigate(['']);
       }
+    })
+  }
+  changePass(auth:string){
+    return this.service.post(`api/updatepass/${this.password}/${this.email}/${auth}`, {newPass:this.newpassword},{responseType: 'text', observe: 'response'});
+  }
+  callChangePass(){
+    let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
+    this.changePass(JSON.stringify(authObject)).subscribe((res: any) => {
     })
   }
 }
