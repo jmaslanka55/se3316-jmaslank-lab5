@@ -12,21 +12,26 @@ export class ListComponent implements OnInit {
 
   constructor(private service: HttpService) {
   }
+
   keyVal;
   subjectVal;
   courseVal;
   arr2;
+
   ngOnInit(): void {
   }
-  populateCodes(){
+
+  populateCodes() {
     return this.service.get(`api/courses/${this.subjectVal}`)
   }
+
   populate() {
     this.populateCodes().subscribe((res: any) => {
       this.arr2 = res;
       console.log(res);
     });
   }
+
   clearDisplay() {
     document.getElementById("DisplaySearch").textContent = "";
   }
@@ -65,12 +70,28 @@ export class ListComponent implements OnInit {
       console.log(error);
     })
   }
-  getKeywordSearch(){
+
+  getKeywordSearch() {
     return this.service.get(`api/courses/keyword/${this.keyVal}`);
   }
-  searchKeyword(){
-    this.getKeywordSearch().subscribe((res:any)=>{
 
+  searchKeyword() {
+    this.getKeywordSearch().subscribe((res: any) => {
+      if (this.keyVal.length <4){
+        alert("Keyword must be 4 characters or more");
+        return;
+      }
+      let list = document.createElement('ol');
+      for (let i = 0; i < res.length; i++) {
+        let course = document.createElement('li');
+        course.appendChild((document.createTextNode("Subject: " + JSON.stringify(res[i].subject)+ "\t\t")));
+        course.appendChild((document.createTextNode("Course Code: " + JSON.stringify(res[i].catalog_nbr)+ "\t\t")));
+        course.appendChild((document.createTextNode("Class: " + JSON.stringify(res[i].className)+ "\t\t")));
+        course.appendChild((document.createTextNode("Section: " + JSON.stringify(res[i].course_info[0].class_section)+ "\t\t")));
+        course.appendChild((document.createTextNode("Class Component: " + JSON.stringify(res[i].course_info[0].ssr_component)+ "\t\t")));
+        list.appendChild(course);
+      }
+      document.getElementById("allClasses").appendChild(list)
     })
   }
 

@@ -283,11 +283,12 @@ app.get(`/api/courses/keyword/:search`,(req,res)=>{
             resultarr.push(data[j]);
             console.log(stringSimilarity.compareTwoStrings(keySearch.toUpperCase(), namearr[j]));
         }
-        if(stringSimilarity.compareTwoStrings(keySearch, codearr[j]) > 0.42){
+        if(stringSimilarity.compareTwoStrings(keySearch, codearr[j]) > 0.44){
             resultarr.push(data[j]);
             console.log(stringSimilarity.compareTwoStrings(keySearch, codearr[j]));
         }
     }
+    console.log(resultarr);
     res.send(resultarr);
 });
 
