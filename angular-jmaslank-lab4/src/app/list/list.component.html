@@ -6,6 +6,11 @@
   <button (click)=searchSubjectCourse()>Search Subject/Course</button>
   <br>
 </div>
+<div id = "keywordSearch">
+  <p> Search by Keyword</p>
+  <input type = "text" [(ngModel)]="keyVal" placeholder = "Keyword Search">
+  <button (click)="searchKeyword()"> Search by Keyword</button>
+</div>
 <div id="DisplaySearch">
   <p id = "subject"></p>
   <p id = "catalog_nbr"></p>

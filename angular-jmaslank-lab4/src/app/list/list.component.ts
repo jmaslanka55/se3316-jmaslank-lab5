@@ -12,7 +12,7 @@ export class ListComponent implements OnInit {
 
   constructor(private service: HttpService) {
   }
-
+  keyVal;
   subjectVal;
   courseVal;
   arr2;
@@ -65,7 +65,14 @@ export class ListComponent implements OnInit {
       console.log(error);
     })
   }
+  getKeywordSearch(){
+    return this.service.get(`api/courses/keyword/${this.keyVal}`);
+  }
+  searchKeyword(){
+    this.getKeywordSearch().subscribe((res:any)=>{
 
+    })
+  }
 
 
 }

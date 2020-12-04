@@ -2,7 +2,7 @@
 
 
 const jwt = require('jsonwebtoken');
-
+var stringSimilarity = require('string-similarity');
 const express = require('express');
 const app = express();
 const port = 3000;
@@ -10,6 +10,7 @@ const fs = require('fs');
 //Read timetable file into data variable
 const data1 = fs.readFileSync('./Lab3-timetable-data.json');
 const data = JSON.parse(data1.toString());
+console.log(data.length);
 //Declare express sanitizer for input sanitization
 const expressSanitizer = require('express-sanitizer');
 app.use(express.json());
@@ -266,7 +267,28 @@ app.post('/api/schedulelist', (req, res) => {
 });
 
 
+//Search Courses by keywords
 
+app.get(`/api/courses/keyword/:search`,(req,res)=>{
+    let namearr = [];
+    let codearr = [];
+    let resultarr = [];
+    let keySearch = req.sanitize(req.params.search);
+    for (let i = 0; i < data.length;i++){
+        namearr[i] = JSON.stringify(data[i].className);
+        codearr[i] = JSON.stringify(data[i].catalog_nbr);
+    }
+    for (let j = 0; j<data.length;j++){
+        if(stringSimilarity.compareTwoStrings(keySearch, namearr[j]) > 0.6){
+            resultarr.push(data[j]);
+        }
+        if(stringSimilarity.compareTwoStrings(keySearch, codearr[j]) > 0.6){
+            resultarr.push(data[j]);
+        }
+    }
+    console.log(resultarr);
+    res.send(resultarr);
+});
 
 
 
