@@ -1,23 +1,18 @@
 <h1>Course Search</h1>
-<div class="CourseSearch">
-  <button (click)=clearDisplay()>Clear Display</button>
-  <button (click)=getData()>All Courses</button>
-</div>
 <div class="searchBox">
-  <input type="text" [(ngModel)]="subjectVal" placeholder="Search by subject">
-
-
+  <input type="text" [(ngModel)]="subjectVal" placeholder="Subject">
   <br>
   <input type = "text"[(ngModel)]="courseVal" placeholder= "Course code">
-  <!--<select #dropdown>
-    <option *ngFor="let x of arr2">{{ x }}</option>
-  </select>-->
   <button (click)=searchSubjectCourse()>Search Subject/Course</button>
   <br>
-  <input type="text" [(ngModel)]="component" placeholder="Search by component">
-  <button (click)=searchSubjectCourseComponent()>Search Component</button>
 </div>
-<p id="DisplaySearch"></p>
+<div id="DisplaySearch">
+  <p id = "subject"></p>
+  <p id = "catalog_nbr"></p>
+  <p id = "className"></p>
+  <p id = "class_section"></p>
+  <p id = "ssr_component"></p>
+</div>
 <div class="ShowAll">
   <ul id="allClasses">
   </ul>

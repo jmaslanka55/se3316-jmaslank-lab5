@@ -15,7 +15,6 @@ export class ListComponent implements OnInit {
 
   subjectVal;
   courseVal;
-  component;
   arr2;
   ngOnInit(): void {
   }
@@ -30,10 +29,6 @@ export class ListComponent implements OnInit {
   }
   clearDisplay() {
     document.getElementById("DisplaySearch").textContent = "";
-    let list = document.getElementById("allClasses");
-    while (list.hasChildNodes()) {
-      list.removeChild(list.firstChild);
-    }
   }
 
   getSubjects() {
@@ -61,27 +56,16 @@ export class ListComponent implements OnInit {
 
   searchSubjectCourse() {
     this.getSubjectCourse().subscribe((res: any) => {
-      res = JSON.stringify(res[0].className) + JSON.stringify(res[0].catalog_nbr) + JSON.stringify(res[0].catalog_description) + "Starts at: "
-      + JSON.stringify(res[0].course_info[0].start_time) + " Ends at: " +(res[0].course_info[0].end_time) ;
-      document.getElementById("DisplaySearch").textContent = res;
-
+      document.getElementById("subject").textContent = "Subject: " + JSON.stringify(res[0].subject);
+      document.getElementById("catalog_nbr").textContent = "Course Code: " + JSON.stringify(res[0].catalog_nbr);
+      document.getElementById("className").textContent = "Class: " + JSON.stringify(res[0].className);
+      document.getElementById("class_section").textContent = "Section: " + JSON.stringify(res[0].course_info[0].class_section);
+      document.getElementById("ssr_component").textContent = "Class Component(s): " + JSON.stringify(res[0].course_info[0].ssr_component);
     }, error => {
       console.log(error);
     })
   }
 
 
-  getSubjectCourseComponent() {
-    return this.service.get(`api/timetable/${this.subjectVal}/${this.courseVal}/${this.component}`);
-  }
-
-  searchSubjectCourseComponent() {
-    this.getSubjectCourseComponent().subscribe((res: any) => {
-      res = JSON.stringify(res[0].className) + JSON.stringify(res[0].catalog_nbr) + JSON.stringify(res[0].catalog_description) + "Starts at: "
-        + JSON.stringify(res[0].course_info[0].start_time) + " Ends at: " +(res[0].course_info[0].end_time)
-        + JSON.stringify(res[0].course_info[0].ssr_component);
-      document.getElementById("DisplaySearch").textContent = res;
-    })
-  }
 
 }
