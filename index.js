@@ -73,10 +73,13 @@ app.post('/api/login', (req, res) => {
     const logData = req.body;
     let email = req.sanitize(logData.emailaddress);
     let passcode = req.sanitize(logData.passcode);
-    console.log(email + " " + passcode);
     for (let i = 0; i < dbUser.getState().Users.length; i++) {
         if (dbUser.getState().Users[i].emailaddress === email) {
             if (dbUser.getState().Users[i].password === passcode) {
+                if(dbUser.getState().Users[i].accountStatus.toLowerCase() === "deactivated"){
+                    res.json({message: "deactivated"});
+                    return;
+                }
                 const accessToken = jwt.sign({
                     emailaddress: email,
                     userPassword: passcode
@@ -86,7 +89,7 @@ app.post('/api/login', (req, res) => {
             }
         }
     }
-    res.send('Username or password incorrect');
+    res.json({message:'Username or password incorrect'});
 });
 
 //Method to create a new user and add them to the User database
@@ -97,11 +100,11 @@ app.put('/api/users', (req, res) => {
     let passcode = req.sanitize(userData.finalPassword);
     for (let i = 0; i < dbUser.getState().Users.length; i++) {
         if (dbUser.getState().Users[i].emailaddress === email) {
-            res.status(404).send("Email already registered");
+            res.json({message:"Email already registered"});
             return;
         }
     }
-    dbUser.get('Users').push({userName: userName, emailaddress: email, password: passcode}).write();
+    dbUser.get('Users').push({userName: userName, emailaddress: email, password: passcode, accountStatus: "Active"}).write();
     dbUser.update('Users').write();
     res.status(200).send("Account created");
 });

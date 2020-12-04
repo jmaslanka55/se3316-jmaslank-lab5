@@ -20,7 +20,11 @@ export class CreateUserComponent implements OnInit {
 
   createUser() {
     this.postUser({name: this.firstName + " " + this.lastName, email:this.email, finalPassword:this.password}).subscribe((res: any)=>{
-
+      console.log(JSON.parse(res));
+      let temp = JSON.parse(res);
+      if(temp.message == "Email already registered") {
+        document.getElementById("createStatus").textContent = "Email already registered";
+      }
     });
   }
   postUser(values:object){

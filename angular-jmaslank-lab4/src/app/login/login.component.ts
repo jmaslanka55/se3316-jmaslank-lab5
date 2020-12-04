@@ -16,10 +16,16 @@ export class LoginComponent implements OnInit {
   }
   verify(){
     this.postLog({emailaddress: this.email, passcode: this.password}).subscribe((res:any)=>{
-      console.log(res);
       let temp = JSON.parse(res);
       localStorage.setItem("jwt", temp.accessToken);
-      console.log("Logged in");
+      if (temp.message == "success") {
+        document.getElementById("loginStatus").textContent = "Successfully logged in";
+      } else if(temp.message == "deactivated"){
+        document.getElementById("loginStatus").textContent = "Account deactivated contact admin";
+      }
+      else{
+        document.getElementById("loginStatus").textContent = "Username/Password Incorrect";
+      }
     });
   }
   postLog(info: object){
