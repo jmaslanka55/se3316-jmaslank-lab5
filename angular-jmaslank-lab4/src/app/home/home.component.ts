@@ -10,11 +10,11 @@ import {Router, RouterModule} from "@angular/router";
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  schedName;
+  schedName = "";
   subjectName;
   courseCode;
   arr;
-  description;
+  description = "";
   email;
   password;
   newpassword;
@@ -46,6 +46,10 @@ export class HomeComponent implements OnInit {
   }
 
   addingSchedule(course) {
+    if(this.subjectName == "" || course == null){
+      alert("Invalid Subject/Code");
+      return;
+    }
     let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
     this.addToSchedule(course,JSON.stringify(authObject)).subscribe((res: any) => {
       let temp = JSON.parse(res.body);
@@ -93,6 +97,10 @@ export class HomeComponent implements OnInit {
     return this.service.post(`api/set/public/${this.schedName}/${auth}`, this.schedule,{responseType: 'text'});
   }
   publicCall(){
+    if(this.subjectName == ""){
+      alert("Invalid Subject/Code");
+      return;
+    }
     let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
     this.setPublic(JSON.stringify(authObject)).subscribe((res: any) => {
       let temp = JSON.parse(res.body);
@@ -105,6 +113,10 @@ export class HomeComponent implements OnInit {
     return this.service.put(`api/make/description/${this.schedName}/${auth}`,{"description": this.description}, {responseType: 'text'});
   }
   descCall(){
+    if (this.description == "") {
+      alert("Invalid description")
+      return;
+    }
     let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
     this.makeDesc(JSON.stringify(authObject)).subscribe((res: any) => {
       let temp = JSON.parse(res.body);
@@ -118,6 +130,10 @@ export class HomeComponent implements OnInit {
   }
 
   createSchedule() {
+    if (this.schedName == ""){
+      alert("Invalid Name for List")
+      return;
+    }
     let authObject = {headers: {Authorization : "Bearer " + localStorage.getItem("jwt")}};
     this.makeSchedule(JSON.stringify(authObject)).subscribe((res: any) => {
       let temp = JSON.parse(res.body);

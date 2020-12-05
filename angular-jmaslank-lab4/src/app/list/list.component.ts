@@ -94,6 +94,15 @@ export class ListComponent implements OnInit {
       document.getElementById("allClasses").appendChild(list)
     })
   }
+  publicLists(){
+    return this.service.get(`api/publiclists`);
+  }
+  callPublic(){
+    this.publicLists().subscribe((res:any)=>{
+      document.getElementById("pLists").textContent = res;
+      }
+    )
+  }
 
 
 }

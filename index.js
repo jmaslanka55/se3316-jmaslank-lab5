@@ -180,6 +180,24 @@ app.get(`/api/courses/keyword/:search`, (req, res) => {
     console.log(resultarr);
     res.send(resultarr);
 });
+app.get(`/api/publiclists`,(req,res)=>{
+    let publicLists = [];
+    let count = 0;
+    for (let i = 0; i < db.getState().Schedule.length; i++){
+        if (db.getState().Schedule[i].visibility === "public" && count <10){
+            if (db.getState().Schedule[i].course_name.length>0) {
+                publicLists.push("User " + db.getState().Schedule[i].userName + " Name "+ db.getState().Schedule[i].schedule_name + " Courses " + db.getState().Schedule[i].course_code.length);
+                count++
+            } else{
+                publicLists.push("User " + db.getState().Schedule[i].userName + " Name " + db.getState().Schedule[i].schedule_name + " Courses 0 ");
+                count ++
+            }
+        }
+    }
+    res.send(publicLists);
+})
+
+
 
 //********************************************************************ACTIONS FOR AUTHORIZED USERS************************************************************
 app.post(`/api/updatepass/:passcode/:email/:auth_token`, (req, res) => {

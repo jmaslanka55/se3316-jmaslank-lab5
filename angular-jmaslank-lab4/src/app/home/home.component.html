@@ -7,7 +7,7 @@
   <button (click) = publicCall()>Set List to public </button>
   <!--<button (click) = deleteSchedule()>Delete Schedule</button>
   <button (click) = deleteAll()>Delete All Schedule</button>-->
-  <button (click) = listAllSchedules()>List Schedules</button>
+  <!--<button (click) = listAllSchedules()>List Schedules</button>-->
 </div>
 <br>
 <div class = "AddingPairs">
@@ -27,7 +27,7 @@
   <input type = "text" [(ngModel)]="password" placeholder="Current Password">
   <input type = "text" [(ngModel)]="newpassword" placeholder="New password">
   <button (click) = callChangePass()>Change password</button>
-  <button (click) = callUserCourses()>Show User's Courses</button>
+  <button (click) = callUserCourses()>Show User's Lists</button>
   <select #dropdown2>
     <option *ngFor = "let x of lists">{{x}}</option>
   </select>
