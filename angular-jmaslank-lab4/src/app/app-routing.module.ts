@@ -5,12 +5,14 @@ import {HomeComponent} from "./home/home.component";
 import {ListComponent} from "./list/list.component";
 import {CreateUserComponent} from "./create-user/create-user.component";
 import {LoginComponent} from "./login/login.component";
+import {AdminComponent} from "./admin/admin.component";
 
 const routes: Routes = [
   {path: '',component: LoginComponent},
   {path: 'Schedule', component: HomeComponent},
   {path: 'Course', component: ListComponent},
-  {path: 'Create', component: CreateUserComponent}
+  {path: 'Create', component: CreateUserComponent},
+  {path: 'Admin', component:AdminComponent}
 ];
 @NgModule({
   declarations: [],

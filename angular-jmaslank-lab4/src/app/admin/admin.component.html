@@ -1,1 +1,5 @@
-<p>admin works!</p>
+<h2>ADMIN FUNCTIONS</h2>
+<button (click) = "callUsers()">Get all Users</button>
+<select #dropdown>
+  <option *ngFor="let x of users">{{x}}</option>
+</select>

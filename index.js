@@ -94,6 +94,10 @@ app.post('/api/login', (req, res) => {
                     userPassword: passcode,
                     name: userName
                 }, accessTokenSecret, {expiresIn: "1h"});
+                if(dbUser.getState().Users[i].role === "admin"){
+                    res.json({accessToken, message: "admin"})
+                    return;
+                }
                 res.json({accessToken, message: "success"});
                 return;
             }
@@ -424,7 +428,20 @@ app.post(`/api/review/create/:auth_token`,(req, res) => {
 });
 
 //*************************************************************************************************************************************************************************
-
+//ADMIN functions
+app.get(`/api/populate/user/:auth_token`, (req,res)=>{
+    const token = req.sanitize(req.params.auth_token);
+    const jsonToken = JSON.parse(token);
+    if (authenticateJWT(jsonToken) == 101) {
+        let users = [];
+        for (let i = 0; i<dbUser.getState().Users.length;i++){
+            if(dbUser.getState().Users[i].role =="user"){
+                users.push(dbUser.getState().Users[i].emailaddress)
+            }
+        }
+        res.send(users);
+    }
+});
 
 //TASK 1
 function get_subject_classname() {

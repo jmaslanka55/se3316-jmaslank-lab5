@@ -42,9 +42,11 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['Schedule']);
       } else if (temp.message == "deactivated") {
         document.getElementById("loginStatus").textContent = "Account deactivated contact admin";
-      } else {
-        document.getElementById("loginStatus").textContent = "Username/Password Incorrect";
-      }
+      } else if (temp.message == "admin") {
+        this.router.navigate(['Admin']);
+      }else{
+          document.getElementById("loginStatus").textContent = "Username/Password Incorrect";
+        }
     });
   }
 
