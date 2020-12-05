@@ -4,6 +4,7 @@
   "description": "Lab 4",
   "main": "index.js",
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "express": "^4.17.1",
     "jwt-decode": "^3.1.2",
     "lowdb": "^1.0.0",

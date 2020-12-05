@@ -25,6 +25,8 @@ const adapterUser = new FileSync('dbUser.json');
 const dbUser = low(adapterUser);
 const adapterReview = new FileSync('dbReview.json');
 const dbReview = low(adapterReview);
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const cors = require('cors');
 app.use(cors());
@@ -84,7 +86,7 @@ app.post('/api/login', (req, res) => {
     let userName = req.sanitize(logData.name);
     for (let i = 0; i < dbUser.getState().Users.length; i++) {
         if (dbUser.getState().Users[i].emailaddress === email) {
-            if (dbUser.getState().Users[i].password === passcode) {
+            if (bcrypt.compareSync(passcode,dbUser.getState().Users[i].password)) {
                 if (dbUser.getState().Users[i].accountStatus.toLowerCase() === "deactivated") {
                     res.json({message: "deactivated"});
                     return;
@@ -115,7 +117,7 @@ app.put('/api/users', (req, res) => {
     let userData = req.body;
     let userName = req.sanitize(userData.name);
     let email = req.sanitize(userData.email);
-    let passcode = req.sanitize(userData.finalPassword);
+    let passcode = bcrypt.hashSync(req.sanitize(userData.finalPassword), saltRounds)
     for (let i = 0; i < dbUser.getState().Users.length; i++) {
         if (dbUser.getState().Users[i].emailaddress === email) {
             res.json({message: "Email already registered"});
