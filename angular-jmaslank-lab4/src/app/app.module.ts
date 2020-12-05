@@ -10,6 +10,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CreateUserComponent} from './create-user/create-user.component';
 import {LoginComponent} from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
+import { PoliciesComponent } from './policies/policies.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { AdminComponent } from './admin/admin.component';
     ListComponent,
     CreateUserComponent,
     LoginComponent,
-    AdminComponent
+    AdminComponent,
+    PoliciesComponent
   ],
   imports: [
     BrowserModule, HttpClientModule, RouterModule, AppRoutingModule, FormsModule

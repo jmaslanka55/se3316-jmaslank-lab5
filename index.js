@@ -147,18 +147,21 @@ app.get('/api/username/:email', (req, res) => {
     }
 });
 //********************************************************************ACTIONS FOR UNAUTHORIZED USERS************************************************************
-app.get('/api/timetable/:subjectCode/:course_code/:course_component?', (req, res) => {
-    const course = data.filter(a => a.subject.toString().toLowerCase() === req.sanitize(req.params.subjectCode.toString().toLowerCase()));
-    const course_code = course.filter(a => a.catalog_nbr.toString().toLowerCase().includes(req.sanitize(req.params.course_code.toString().toLowerCase())));
-    if (course === undefined || course.length == 0 || course_code === undefined || course_code.length == 0) {
-        res.status(404).send("Subject with code " + req.sanitize(req.params.subjectCode) + " code " + req.sanitize(req.params.course_code) + " does not exist");
-    } else {
-        if (course_code.filter(a => a.course_info[0].ssr_component.toString().toLowerCase() === req.sanitize(req.params.course_component))) {
-            res.send(course_code);
-        } else {
-            res.send(course_code);
-        }
+app.get('/api/timetable/:subjectCode?/:course_code?', (req, res) => {
+    console.log(req.sanitize(req.params.course_code));
+    if(req.sanitize(req.params.course_code) === undefined){
+        const course = data.filter(a => a.subject.toString().toLowerCase() === req.sanitize(req.params.subjectCode.toString().toLowerCase()));
+        res.send(course);
+    } else if(req.sanitize(req.params.course_code) !== undefined && req.sanitize(req.params.subjectCode) !== undefined){
+        const course = data.filter(a => a.subject.toString().toLowerCase() === req.sanitize(req.params.subjectCode.toString().toLowerCase()));
+
+        const course_code = course.filter(a => a.catalog_nbr.toString().toLowerCase().includes(req.sanitize(req.params.course_code.toString().toLowerCase())));
+        res.send(course_code);
     }
+});
+app.get('/api/coursecode/:course_code', (req, res) => {
+    const course = data.filter(a => a.subject.toString().toLowerCase().includes(req.sanitize(req.params.course_code.toString().toLowerCase())));
+    res.send(course);
 });
 
 //Search Courses by keywords
@@ -244,8 +247,8 @@ app.post(`/api/updatepass/:passcode/:email/:auth_token`, (req, res) => {
         let newCode = code.newPass;
         for (let i = 0; i < dbUser.getState().Users.length; i++) {
             if (dbUser.getState().Users[i].emailaddress === email) {
-                if (dbUser.getState().Users[i].password === passcode) {
-                    dbUser.getState().Users[i].password = newCode;
+                if (bcrypt.compareSync(passcode,dbUser.getState().Users[i].password)) {
+                    dbUser.getState().Users[i].password = bcrypt.hashSync(newCode,saltRounds);
                     dbUser.update('Users').write();
                     return;
                 }

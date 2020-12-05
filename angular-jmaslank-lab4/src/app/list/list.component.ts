@@ -36,36 +36,47 @@ export class ListComponent implements OnInit {
     document.getElementById("DisplaySearch").textContent = "";
   }
 
-  getSubjects() {
-    return this.service.get('api/subject');
-  }
-
-  getData() {
-
-    this.getSubjects().subscribe((res: any) => {
-      this.arr = res;
-      for (let i = 0; i < Object.keys(this.arr).length / 2; i++) {
-        let list = document.createElement('li');
-        let subjectNode = document.createTextNode(res["Subject code " + (i + 1)] + ": ");
-        let nameNode = document.createTextNode(res["className " + (i + 1)]);
-        list.appendChild(subjectNode);
-        list.appendChild(nameNode);
-        document.getElementById("allClasses").appendChild(list);
-      }
-    })
-  }
-
   getSubjectCourse() {
     return this.service.get(`api/timetable/${this.subjectVal}/${this.courseVal}`);
   }
-
+  getcourseCode(){
+    return this.service.get(`api/coursecode/${this.courseVal}`);
+  }
   searchSubjectCourse() {
+    if (this.subjectVal == "") {
+      this.getcourseCode().subscribe((res: any) => {
+        for (let i = 0; i < res.length; i++) {
+          let list = document.createElement('li');
+          let subjectNode = document.createTextNode("Subject: " + JSON.stringify(res[i].subject));
+          let courseNode = document.createTextNode("Course Code: " + JSON.stringify(res[i].catalog_nbr));
+          let nameNode = document.createTextNode("Class: " + JSON.stringify(res[i].className));
+          let sectionNode = document.createTextNode("Section: " + JSON.stringify(res[i].course_info[0].class_section));
+          let componentNode = document.createTextNode("Class Component(s): " + JSON.stringify(res[i].course_info[0].ssr_component));
+          list.appendChild(subjectNode);
+          list.appendChild(courseNode);
+          list.appendChild(nameNode);
+          list.appendChild(sectionNode);
+          list.appendChild(componentNode);
+          document.getElementById("results").appendChild(list);
+        }
+      })
+    }
     this.getSubjectCourse().subscribe((res: any) => {
-      document.getElementById("subject").textContent = "Subject: " + JSON.stringify(res[0].subject);
-      document.getElementById("catalog_nbr").textContent = "Course Code: " + JSON.stringify(res[0].catalog_nbr);
-      document.getElementById("className").textContent = "Class: " + JSON.stringify(res[0].className);
-      document.getElementById("class_section").textContent = "Section: " + JSON.stringify(res[0].course_info[0].class_section);
-      document.getElementById("ssr_component").textContent = "Class Component(s): " + JSON.stringify(res[0].course_info[0].ssr_component);
+
+      for(let i = 0; i<res.length;i++){
+        let list = document.createElement('li');
+        let subjectNode = document.createTextNode("Subject: " + JSON.stringify(res[i].subject));
+        let courseNode = document.createTextNode("Course Code: " + JSON.stringify(res[i].catalog_nbr));
+        let nameNode = document.createTextNode("Class: " + JSON.stringify(res[i].className));
+        let sectionNode = document.createTextNode("Section: " + JSON.stringify(res[i].course_info[0].class_section));
+        let componentNode = document.createTextNode("Class Component(s): " + JSON.stringify(res[i].course_info[0].ssr_component));
+        list.appendChild(subjectNode);
+        list.appendChild(courseNode);
+        list.appendChild(nameNode);
+        list.appendChild(sectionNode);
+        list.appendChild(componentNode);
+        document.getElementById("results").appendChild(list);
+      }
     }, error => {
       console.log(error);
     })
