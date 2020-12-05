@@ -186,7 +186,7 @@ app.get(`/api/publiclists`,(req,res)=>{
     for (let i = 0; i < db.getState().Schedule.length; i++){
         if (db.getState().Schedule[i].visibility === "public" && count <10){
             if (db.getState().Schedule[i].course_name.length>0) {
-                publicLists.push("User " + db.getState().Schedule[i].userName + " Name "+ db.getState().Schedule[i].schedule_name + " Courses " + db.getState().Schedule[i].course_code.length);
+                publicLists.push("User " + db.getState().Schedule[i].userName + " Name "+ db.getState().Schedule[i].schedule_name + " Courses " + db.getState().Schedule[i].course_name.length);
                 count++
             } else{
                 publicLists.push("User " + db.getState().Schedule[i].userName + " Name " + db.getState().Schedule[i].schedule_name + " Courses 0 ");
@@ -195,7 +195,35 @@ app.get(`/api/publiclists`,(req,res)=>{
         }
     }
     res.send(publicLists);
+});
+app.get(`/api/public/list`,(req,res)=>{
+    let showPublic = [];
+    for (let i = 0; i < db.getState().Schedule.length; i++) {
+        if (db.getState().Schedule[i].visibility.toUpperCase() === "PUBLIC") {
+                showPublic.push(db.getState().Schedule[i].schedule_name);
+        }
+    }
+    res.send(showPublic);
+});
+app.get(`/api/public/list/:name`,(req,res)=>{
+    let listName = req.sanitize(req.params.name);
+    let showPublic = [];
+    for (let i = 0; i < db.getState().Schedule.length; i++) {
+        if (db.getState().Schedule[i].schedule_name.toUpperCase() === listName.toUpperCase()) {
+            for (let k = 0; k < db.getState().Schedule[i].course_name.length; k++) {
+                let showCourse = db.getState().Schedule[i].course_name[k];
+                let showSubject = db.getState().Schedule[i].subject[k];
+                const course = data.filter(a => a.subject.toString().toLowerCase() === req.sanitize(showSubject.toString().toLowerCase()));
+                const final = course.filter(a => a.catalog_nbr.toString().toUpperCase() === req.sanitize(showCourse.toString().toUpperCase()));
+                showPublic.push(final);
+            }
+            res.send(showPublic);
+            return;
+        }
+    }
+    res.status(404).send("Schedule not found");
 })
+
 
 
 

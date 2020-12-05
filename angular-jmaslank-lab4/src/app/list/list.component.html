@@ -2,25 +2,30 @@
 <div class="searchBox">
   <input type="text" [(ngModel)]="subjectVal" placeholder="Subject">
   <br>
-  <input type = "text"[(ngModel)]="courseVal" placeholder= "Course code">
+  <input type="text" [(ngModel)]="courseVal" placeholder="Course code">
   <button (click)=searchSubjectCourse()>Search Subject/Course</button>
   <br>
 </div>
-<div id = "keywordSearch">
+<div id="keywordSearch">
   <p> Search by Keyword</p>
-  <input type = "text" [(ngModel)]="keyVal" placeholder = "Keyword Search">
+  <input type="text" [(ngModel)]="keyVal" placeholder="Keyword Search">
   <button (click)="searchKeyword()"> Search by Keyword</button>
 </div>
 <div id="DisplaySearch">
-  <p id = "subject"></p>
-  <p id = "catalog_nbr"></p>
-  <p id = "className"></p>
-  <p id = "class_section"></p>
-  <p id = "ssr_component"></p>
+  <p id="subject"></p>
+  <p id="catalog_nbr"></p>
+  <p id="className"></p>
+  <p id="class_section"></p>
+  <p id="ssr_component"></p>
 </div>
-<div id = "public">
-  <button (click) = "callPublic()">Show public Lists</button>
-  <p id ="pLists"></p>
+<div id="public">
+  <button (click)="callPublic()">Show public Lists</button>
+  <select #dropdown>
+    <option *ngFor="let x of arr2">{{ x }}</option>
+  </select>
+  <button (click)="callPopulate()">Dropdown public lists</button>
+  <button (click)="callTimetables(dropdown.value)">Show timetable for selected list</button>
+  <p id="pLists"></p>
 </div>
 
 <P id="ERROR"></P>

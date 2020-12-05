@@ -9,6 +9,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CreateUserComponent} from './create-user/create-user.component';
 import {LoginComponent} from './login/login.component';
+import { AdminComponent } from './admin/admin.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import {LoginComponent} from './login/login.component';
     HomeComponent,
     ListComponent,
     CreateUserComponent,
-    LoginComponent
+    LoginComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule, HttpClientModule, RouterModule, AppRoutingModule, FormsModule

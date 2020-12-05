@@ -103,6 +103,27 @@ export class ListComponent implements OnInit {
       }
     )
   }
+  populatePublic(){
+    return this.service.get('api/public/list');
+  }
+  callPopulate(){
+    this.populatePublic().subscribe((res:any)=>{
+      console.log(res);
+      this.arr2 = res;
+    })
+  }
+  getTimetable(name){
+    return this.service.get(`api/public/list/${name}`)
+  }
+  callTimetables(name){
+    this.getTimetable(name).subscribe((res:any)=>{
+      let classes = "";
+      for (let i = 0; i<res.length;i++){
+        classes += JSON.stringify(res[i][0].catalog_nbr)+ " Name: " + JSON.stringify(res[i][0].className) + JSON.stringify(res[i][0].catalog_description) + "\n\n"
+      }
+      document.getElementById("ERROR").textContent = `List: ${name} Classes: ` + classes;
+    })
+  }
 
 
 }
