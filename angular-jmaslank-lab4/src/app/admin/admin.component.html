@@ -3,3 +3,6 @@
 <select #dropdown>
   <option *ngFor="let x of users">{{x}}</option>
 </select>
+<button (click) = "callAdmin(dropdown.value)">Make user Admin</button>
+<button (click) = "callDeactivate(dropdown.value)">Deactivate User</button>
+<button (click) = "callActivate(dropdown.value)">Activate User</button>

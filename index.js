@@ -432,16 +432,61 @@ app.post(`/api/review/create/:auth_token`,(req, res) => {
 app.get(`/api/populate/user/:auth_token`, (req,res)=>{
     const token = req.sanitize(req.params.auth_token);
     const jsonToken = JSON.parse(token);
-    if (authenticateJWT(jsonToken) == 101) {
+    if (authenticateJWT(jsonToken) === 101) {
         let users = [];
         for (let i = 0; i<dbUser.getState().Users.length;i++){
-            if(dbUser.getState().Users[i].role =="user"){
+            if(dbUser.getState().Users[i].role ==="user"){
                 users.push(dbUser.getState().Users[i].emailaddress)
             }
         }
         res.send(users);
     }
 });
+app.post(`/api/change/admin/:user/:auth_token`,(req, res) => {
+    const token = req.sanitize(req.params.auth_token);
+    const jsonToken = JSON.parse(token);
+    let user = req.params.user;
+    if (authenticateJWT(jsonToken) === 101) {
+        for (let i = 0; i<dbUser.getState().Users.length;i++){
+            if(dbUser.getState().Users[i].emailaddress === user){
+                dbUser.getState().Users[i].role = "admin";
+                dbUser.update('Users').write();
+            }
+        }
+    }
+});
+app.post(`/api/deactivated/:user/:auth_token`,(req,res)=>{
+    const token = req.sanitize(req.params.auth_token);
+    const jsonToken = JSON.parse(token);
+    let user = req.sanitize(req.params.user);
+    if (authenticateJWT(jsonToken) === 101) {
+        for (let i = 0; i<dbUser.getState().Users.length;i++){
+            if(dbUser.getState().Users[i].emailaddress === user){
+                dbUser.getState().Users[i].accountStatus = "deactivated";
+                dbUser.update('Users').write();
+            }
+        }
+    }
+})
+app.post(`/api/activate/:user/:auth_token`,(req,res)=>{
+    const token = req.sanitize(req.params.auth_token);
+    const jsonToken = JSON.parse(token);
+    let user = req.sanitize(req.params.user);
+    if (authenticateJWT(jsonToken) === 101) {
+        for (let i = 0; i<dbUser.getState().Users.length;i++){
+            if(dbUser.getState().Users[i].emailaddress === user){
+                dbUser.getState().Users[i].accountStatus = "active";
+                dbUser.update('Users').write();
+            }
+        }
+    }
+});
+
+
+
+
+
+
 
 //TASK 1
 function get_subject_classname() {
