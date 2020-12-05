@@ -17,7 +17,9 @@
     <option *ngFor="let x of arr">{{ x }}</option>
   </select>
   <button (click) = "addingSchedule(dropdown.value)">Add pair to schedule</button>
-  <button (click) = scheduleSearch()>Timetable by Schedule Name</button>
+  <input type = "text" [(ngModel)]="review" placeholder="Review">
+  <button (click) = "callReview(dropdown.value)">Leave Review</button>
+  <!--<button (click) = scheduleSearch()>Timetable by Schedule Name</button>-->
 </div>
 <br>
 <div class = "Change password">
@@ -31,6 +33,7 @@
   </select>
   <button (click) = deleteSchedule(dropdown2.value)> Delete Schedule (Dropdown) </button>
 </div>
+
 
 <textarea id ="ShowResults" type = "textarea"></textarea>
 <P id = "ERROR"></P>

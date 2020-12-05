@@ -32,12 +32,10 @@ export class LoginComponent implements OnInit {
       alert("invalid Email");
       return;
     }
-    this.getName().subscribe((res:any)=>{
-      this.name = res;
-      console.log(res)
-    });
     this.postLog({emailaddress: this.email, passcode: this.password, name: this.name}).subscribe((res: any) => {
+
       let temp = JSON.parse(res);
+
       localStorage.setItem("jwt", temp.accessToken);
       if (temp.message == "success") {
         document.getElementById("loginStatus").textContent = "Successfully logged in";

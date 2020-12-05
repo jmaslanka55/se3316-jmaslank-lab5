@@ -19,6 +19,7 @@ export class HomeComponent implements OnInit {
   password;
   newpassword;
   lists;
+  review;
   readonly httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -155,5 +156,14 @@ export class HomeComponent implements OnInit {
     } else {
       alert("Not Deleted");
     }
+  }
+  leaveReview(auth:string,courseCode){
+    return this.service.post(`api/review/create/${auth}`, {subject: this.subjectName, courseCode: courseCode, review: this.review},{responseType: 'text'} )
+  }
+  callReview(courseCode){
+    let authObject = {headers: {Authorization: "Bearer " + localStorage.getItem("jwt")}};
+    this.leaveReview(JSON.stringify(authObject),courseCode).subscribe((res: any) => {
+
+    })
   }
 }

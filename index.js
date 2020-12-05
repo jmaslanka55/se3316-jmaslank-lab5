@@ -23,6 +23,8 @@ const adapter = new FileSync('db.json');
 const db = low(adapter);
 const adapterUser = new FileSync('dbUser.json');
 const dbUser = low(adapterUser);
+const adapterReview = new FileSync('dbReview.json');
+const dbReview = low(adapterReview);
 
 const cors = require('cors');
 app.use(cors());
@@ -38,15 +40,21 @@ function create_schedule_db() {
     }).write();
 }
 
+
 function create_user_db() {
     dbUser.defaults({
         Users: []
     }).write();
 }
-
+function create_review_db() {
+    dbReview.defaults({
+        Reviews: []
+    }).write();
+}
 //call create db function
 create_schedule_db();
 create_user_db();
+create_review_db()
 //listening for requests
 app.listen(port, () => {
     console.log('Listening on port ' + port);
@@ -84,7 +92,7 @@ app.post('/api/login', (req, res) => {
                 const accessToken = jwt.sign({
                     emailAddress: email,
                     userPassword: passcode,
-                    name: userName,
+                    name: userName
                 }, accessTokenSecret, {expiresIn: "1h"});
                 res.json({accessToken, message: "success"});
                 return;
@@ -122,11 +130,13 @@ app.put('/api/users', (req, res) => {
 
 });
 app.get('/api/username/:email', (req, res) => {
-    let email = req.sanitize(req.params.email);
+    let email = req.params.email;
+    let username;
     for (let i = 0; i < dbUser.getState().Users.length; i++) {
         if (dbUser.getState().Users[i].emailaddress === email) {
-            console.log(dbUser.getState().Users[i].userName)
-            res.send(dbUser.getState().Users[i].userName);
+            username = dbUser.getState().Users[i].emailaddress;
+            console.log(username);
+            res.send(username);
         }
     }
 });
@@ -198,7 +208,13 @@ app.put('/api/schedule/:scheduleName/:auth_token', (req, res) => {
     const token = req.sanitize(req.params.auth_token);
     const jsonToken = JSON.parse(token);
     let decoded = jwt_decode(token);
+    let userName;
     if (authenticateJWT(jsonToken) == 101) {
+        for (let j = 0; j<dbUser.getState().Users.length; j++){
+            if (decoded.emailAddress == dbUser.getState().Users[j].emailaddress){
+                userName = dbUser.getState().Users[j].userName;
+            }
+        }
         let schedName = req.sanitize(req.params.scheduleName);
         for (let i = 0; i < db.getState().Schedule.length; i++) {
             if (db.getState().Schedule[i].schedule_name === schedName) {
@@ -214,7 +230,7 @@ app.put('/api/schedule/:scheduleName/:auth_token', (req, res) => {
             visibility: "private",
             user: decoded.emailAddress,
             time: Math.floor(Date.now() / 1000),
-            name: decoded.name
+            userName: userName,
         }).write();
         res.status(200).send();
     } else {
@@ -330,6 +346,37 @@ app.post('/api/remove/schedule/:scheduleName/:auth_token', (req, res) => {
         res.status(404).send("does not exist");
     }
 });
+app.post(`/api/review/create/:auth_token`,(req, res) => {
+    const token = req.sanitize(req.params.auth_token);
+    const jsonToken = JSON.parse(token);
+    let decoded = jwt_decode(token);
+    let userName;
+    if (authenticateJWT(jsonToken) == 101) {
+        const review = req.body;
+        let course = req.sanitize(review.courseCode);
+        let subject = req.sanitize(review.subject);
+        let realReview = req.sanitize(review.review);
+        let sanitizedReview = JSON.parse(`"${realReview}"`);
+        let sanitizedCourse = JSON.parse(`"${course}"`);
+        let sanitizedSubject = JSON.parse(`"${subject}"`);
+        for (let j = 0; j<dbUser.getState().Users.length; j++){
+            if (decoded.emailAddress === dbUser.getState().Users[j].emailaddress){
+                userName = dbUser.getState().Users[j].userName;
+            }
+        }
+        dbReview.get('Reviews').push({
+            review: sanitizedReview,
+            subject: sanitizedSubject,
+            course_code: sanitizedCourse,
+            time: Math.floor(Date.now() / 1000),
+            userName: userName,
+        }).write();
+        res.status(200).send();
+    } else {
+        res.json({message: "failed"});
+    }
+});
+
 //*************************************************************************************************************************************************************************
 
 
