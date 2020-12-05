@@ -14,7 +14,7 @@ export class ListComponent implements OnInit {
   }
 
   keyVal;
-  subjectVal;
+  subjectVal = "";
   courseVal;
   arr2;
 
@@ -39,11 +39,14 @@ export class ListComponent implements OnInit {
   getSubjectCourse() {
     return this.service.get(`api/timetable/${this.subjectVal}/${this.courseVal}`);
   }
-  getcourseCode(){
+
+  getcourseCode() {
     return this.service.get(`api/coursecode/${this.courseVal}`);
   }
+
   searchSubjectCourse() {
     if (this.subjectVal == "") {
+      console.log("poop");
       this.getcourseCode().subscribe((res: any) => {
         for (let i = 0; i < res.length; i++) {
           let list = document.createElement('li');
@@ -60,10 +63,11 @@ export class ListComponent implements OnInit {
           document.getElementById("results").appendChild(list);
         }
       })
+      return;
     }
     this.getSubjectCourse().subscribe((res: any) => {
 
-      for(let i = 0; i<res.length;i++){
+      for (let i = 0; i < res.length; i++) {
         let list = document.createElement('li');
         let subjectNode = document.createTextNode("Subject: " + JSON.stringify(res[i].subject));
         let courseNode = document.createTextNode("Course Code: " + JSON.stringify(res[i].catalog_nbr));
@@ -88,49 +92,55 @@ export class ListComponent implements OnInit {
 
   searchKeyword() {
     this.getKeywordSearch().subscribe((res: any) => {
-      if (this.keyVal.length <4){
+      if (this.keyVal.length < 4) {
         alert("Keyword must be 4 characters or more");
         return;
       }
       let list = document.createElement('ol');
       for (let i = 0; i < res.length; i++) {
         let course = document.createElement('li');
-        course.appendChild((document.createTextNode("Subject: " + JSON.stringify(res[i].subject)+ "\t\t")));
-        course.appendChild((document.createTextNode("Course Code: " + JSON.stringify(res[i].catalog_nbr)+ "\t\t")));
-        course.appendChild((document.createTextNode("Class: " + JSON.stringify(res[i].className)+ "\t\t")));
-        course.appendChild((document.createTextNode("Section: " + JSON.stringify(res[i].course_info[0].class_section)+ "\t\t")));
-        course.appendChild((document.createTextNode("Class Component: " + JSON.stringify(res[i].course_info[0].ssr_component)+ "\t\t")));
+        course.appendChild((document.createTextNode("Subject: " + JSON.stringify(res[i].subject) + "\t\t")));
+        course.appendChild((document.createTextNode("Course Code: " + JSON.stringify(res[i].catalog_nbr) + "\t\t")));
+        course.appendChild((document.createTextNode("Class: " + JSON.stringify(res[i].className) + "\t\t")));
+        course.appendChild((document.createTextNode("Section: " + JSON.stringify(res[i].course_info[0].class_section) + "\t\t")));
+        course.appendChild((document.createTextNode("Class Component: " + JSON.stringify(res[i].course_info[0].ssr_component) + "\t\t")));
         list.appendChild(course);
       }
       document.getElementById("allClasses").appendChild(list)
     })
   }
-  publicLists(){
+
+  publicLists() {
     return this.service.get(`api/publiclists`);
   }
-  callPublic(){
-    this.publicLists().subscribe((res:any)=>{
-      document.getElementById("pLists").textContent = res;
+
+  callPublic() {
+    this.publicLists().subscribe((res: any) => {
+        document.getElementById("pLists").textContent = res;
       }
     )
   }
-  populatePublic(){
+
+  populatePublic() {
     return this.service.get('api/public/list');
   }
-  callPopulate(){
-    this.populatePublic().subscribe((res:any)=>{
+
+  callPopulate() {
+    this.populatePublic().subscribe((res: any) => {
       console.log(res);
       this.arr2 = res;
     })
   }
-  getTimetable(name){
+
+  getTimetable(name) {
     return this.service.get(`api/public/list/${name}`)
   }
-  callTimetables(name){
-    this.getTimetable(name).subscribe((res:any)=>{
+
+  callTimetables(name) {
+    this.getTimetable(name).subscribe((res: any) => {
       let classes = "";
-      for (let i = 0; i<res.length;i++){
-        classes += JSON.stringify(res[i][0].catalog_nbr)+ " Name: " + JSON.stringify(res[i][0].className) + JSON.stringify(res[i][0].catalog_description) + "\n\n"
+      for (let i = 0; i < res.length; i++) {
+        classes += JSON.stringify(res[i][0].catalog_nbr) + " Name: " + JSON.stringify(res[i][0].className) + JSON.stringify(res[i][0].catalog_description) + "\n\n"
       }
       document.getElementById("ERROR").textContent = `List: ${name} Classes: ` + classes;
     })

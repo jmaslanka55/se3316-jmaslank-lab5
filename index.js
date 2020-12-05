@@ -160,7 +160,7 @@ app.get('/api/timetable/:subjectCode?/:course_code?', (req, res) => {
     }
 });
 app.get('/api/coursecode/:course_code', (req, res) => {
-    const course = data.filter(a => a.subject.toString().toLowerCase().includes(req.sanitize(req.params.course_code.toString().toLowerCase())));
+    const course = data.filter(a => a.catalog_nbr.toString().toLowerCase().includes(req.sanitize(req.params.course_code.toString().toLowerCase())));
     res.send(course);
 });
 
