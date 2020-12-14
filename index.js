@@ -15,7 +15,7 @@ const expressSanitizer = require('express-sanitizer');
 app.use(express.json());
 app.use(expressSanitizer());
 //Use static folder for front end
-app.use('/', express.static('static'));
+app.use(express.static('static'));
 //LowDB
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
