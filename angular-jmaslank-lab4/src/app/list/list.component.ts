@@ -33,7 +33,7 @@ export class ListComponent implements OnInit {
   }
 
   clearDisplay() {
-    document.getElementById("DisplaySearch").textContent = "";
+    document.getElementById("results").innerHTML = "";
   }
 
   getSubjectCourse() {
@@ -46,7 +46,6 @@ export class ListComponent implements OnInit {
 
   searchSubjectCourse() {
     if (this.subjectVal == "") {
-      console.log("poop");
       this.getcourseCode().subscribe((res: any) => {
         for (let i = 0; i < res.length; i++) {
           let list = document.createElement('li');

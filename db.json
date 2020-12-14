@@ -1,0 +1,18 @@
+{
+  "Schedule": [
+    {
+      "schedule_name": "Hello",
+      "description": "Hello",
+      "subject": [
+        "se"
+      ],
+      "course_name": [
+        "3316A"
+      ],
+      "visibility": "public",
+      "user": "jmaslanka@live.ca",
+      "time": 1607139177,
+      "userName": "Jason Maslanka"
+    }
+  ]
+}

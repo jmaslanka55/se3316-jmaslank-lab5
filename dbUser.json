@@ -1,0 +1,11 @@
+{
+  "Users": [
+    {
+      "userName": "Jason Maslanka",
+      "emailaddress": "jmaslanka@live.ca",
+      "password": "$2b$10$6nrytlb25ILiWVqsPQ3FHefRjBoCEoZFy0vhDv4nPiq5pmDu9kBBu",
+      "accountStatus": "Active",
+      "role": "admin"
+    }
+  ]
+}
